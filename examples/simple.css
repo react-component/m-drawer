@@ -1,0 +1,81 @@
+.rc-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+.rc-drawer-sidebar {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  will-change: transform;
+  overflow-y: auto;
+}
+.rc-drawer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  -webkit-transition: left 0.3s ease-out, right 0.3s ease-out;
+  transition: left 0.3s ease-out, right 0.3s ease-out;
+}
+.rc-drawer-overlay {
+  z-index: 1;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: opacity 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.rc-drawer-draghandle {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background-color: rgba(50, 50, 50, 0.2);
+}
+.rc-drawer-draghandle::after {
+  content: '||';
+  position: absolute;
+  top: 48%;
+  left: 1px;
+}
+.rc-drawer.rc-drawer-left .rc-drawer-sidebar {
+  left: 0;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+.rc-drawer.rc-drawer-right .rc-drawer-sidebar {
+  right: 0;
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+.drawer-container {
+  position: relative;
+  height: 600px;
+  border: 1px solid #ccc;
+}
+.rc-drawer-sidebar {
+  padding: 16px;
+  height: 100%;
+  background-color: white;
+}
+
+/*# sourceMappingURL=simple.css.map*/
