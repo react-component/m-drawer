@@ -1,0 +1,69 @@
+@drawerPrefixCls: rc-drawer;
+.@{drawerPrefixCls} {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+
+  &-sidebar {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    transition: transform .3s ease-out;
+    will-change: transform;
+    overflow-y: auto;
+  }
+  &-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    transition: left .3s ease-out, right .3s ease-out;
+  }
+  &-overlay {
+    z-index: 1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  &-draghandle {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background-color: rgba(50, 50, 50, 0.2);
+    &::after {
+      content: '||';
+      position: absolute;
+      top: 48%;
+      left: 1px;
+    }
+  }
+
+  &.@{drawerPrefixCls}-left {
+    .@{drawerPrefixCls}-sidebar {
+      left: 0;
+      transform: translateX(-100%);
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+    }
+  }
+  &.@{drawerPrefixCls}-right {
+    .@{drawerPrefixCls}-sidebar {
+      right: 0;
+      transform: translateX(100%);
+      box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
