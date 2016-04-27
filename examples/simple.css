@@ -9,8 +9,6 @@
 .rc-drawer-sidebar {
   z-index: 2;
   position: absolute;
-  top: 0;
-  bottom: 0;
   -webkit-transition: -webkit-transform 0.3s ease-out;
   transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
@@ -31,10 +29,10 @@
 .rc-drawer-overlay {
   z-index: 1;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 0;
   visibility: hidden;
   -webkit-transition: opacity 0.3s ease-out;
@@ -55,6 +53,16 @@
   top: 48%;
   left: 1px;
 }
+.rc-drawer.rc-drawer-left .rc-drawer-sidebar,
+.rc-drawer.rc-drawer-right .rc-drawer-sidebar {
+  top: 0;
+  bottom: 0;
+}
+.rc-drawer.rc-drawer-top .rc-drawer-sidebar,
+.rc-drawer.rc-drawer-bottom .rc-drawer-sidebar {
+  left: 0;
+  right: 0;
+}
 .rc-drawer.rc-drawer-left .rc-drawer-sidebar {
   left: 0;
   -webkit-transform: translateX(-100%);
@@ -67,15 +75,36 @@
           transform: translateX(100%);
   box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
 }
+.rc-drawer.rc-drawer-top .rc-drawer-sidebar {
+  top: 0;
+  -webkit-transform: translateY(-100%);
+          transform: translateY(-100%);
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+.rc-drawer.rc-drawer-bottom .rc-drawer-sidebar {
+  bottom: 0;
+  -webkit-transform: translateY(100%);
+          transform: translateY(100%);
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
+}
 .drawer-container {
   position: relative;
-  height: 600px;
+  height: 400px;
   border: 1px solid #ccc;
+}
+.drawer-container .main {
+  position: relative;
+  padding: 10px;
+  box-sizing: border-box;
+  height: 100%;
 }
 .rc-drawer-sidebar {
   padding: 16px;
+  background-color: #e4f6fe;
+}
+.rc-drawer-left .rc-drawer-sidebar,
+.rc-drawer-right .rc-drawer-sidebar {
   height: 100%;
-  background-color: white;
 }
 
 /*# sourceMappingURL=simple.css.map*/

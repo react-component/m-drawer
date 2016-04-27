@@ -39,7 +39,7 @@ webpackJsonp([0,1],[
 	      open: false,
 	      transitions: true,
 	      touch: true,
-	      pullRight: false,
+	      position: 'left',
 	      touchHandleWidth: 20,
 	      dragToggleDistance: 30
 	    };
@@ -56,6 +56,11 @@ webpackJsonp([0,1],[
 	    if (!docked) {
 	      this.onSetOpen(false);
 	    }
+	  },
+	  changePos: function changePos(e) {
+	    this.setState({
+	      position: e.target.value
+	    });
 	  },
 	  render: function render() {
 	    var _this = this;
@@ -80,11 +85,11 @@ webpackJsonp([0,1],[
 	      )
 	    );
 	
-	    var sidebarProps = {
+	    var drawerProps = {
 	      docked: this.state.docked,
 	      open: this.state.open,
 	      touch: this.state.touch,
-	      pullRight: this.state.pullRight,
+	      position: this.state.position,
 	      touchHandleWidth: this.state.touchHandleWidth,
 	      dragToggleDistance: this.state.dragToggleDistance,
 	      transitions: this.state.transitions,
@@ -95,14 +100,14 @@ webpackJsonp([0,1],[
 	      { className: 'drawer-container' },
 	      _react2["default"].createElement(
 	        _rcDrawer2["default"],
-	        _extends({ sidebar: sidebar }, sidebarProps),
+	        _extends({ sidebar: sidebar }, drawerProps),
 	        _react2["default"].createElement(
 	          'div',
-	          null,
+	          { className: 'main' },
 	          _react2["default"].createElement(
 	            'p',
 	            null,
-	            'React Sidebar is a sidebar component for React.'
+	            'React component'
 	          ),
 	          _react2["default"].createElement(
 	            'button',
@@ -110,6 +115,37 @@ webpackJsonp([0,1],[
 	                _this.setState({ open: !_this.state.open });
 	              } },
 	            'switch-open'
+	          ),
+	          _react2["default"].createElement(
+	            'p',
+	            null,
+	            ['left', 'right', 'top', 'bottom'].map(function (i, index) {
+	              return _react2["default"].createElement(
+	                'span',
+	                {
+	                  key: index, style: { marginRight: 10 }
+	                },
+	                _react2["default"].createElement('input', { type: 'radio', value: i, id: 'pos-' + index,
+	                  checked: _this.state.position === i, onChange: _this.changePos
+	                }),
+	                ' ',
+	                _react2["default"].createElement(
+	                  'label',
+	                  { htmlFor: 'pos-' + index },
+	                  i
+	                )
+	              );
+	            })
+	          ),
+	          _react2["default"].createElement(
+	            'p',
+	            { style: { "float": 'right' } },
+	            'right content'
+	          ),
+	          _react2["default"].createElement(
+	            'p',
+	            { style: { position: 'absolute', bottom: 10 } },
+	            'bottom content'
 	          )
 	        )
 	      )
@@ -217,9 +253,140 @@ webpackJsonp([0,1],[
 	
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Drawer).call(this, props));
 	
+	    _this.inCancelDistanceOnScroll = function () {
+	      var cancelDistanceOnScroll = void 0;
+	
+	      if (_this.props.position === 'right') {
+	        cancelDistanceOnScroll = Math.abs(_this.state.touchCurrentX - _this.state.touchStartX) < CANCEL_DISTANCE_ON_SCROLL;
+	      } else if (_this.props.position === 'left') {
+	        cancelDistanceOnScroll = Math.abs(_this.state.touchStartX - _this.state.touchCurrentX) < CANCEL_DISTANCE_ON_SCROLL;
+	      }
+	      return cancelDistanceOnScroll;
+	    };
+	
+	    _this.isTouching = function () {
+	      return _this.state.touchIdentifier !== null;
+	    };
+	
+	    _this.saveSidebarSize = function () {
+	      var sidebar = _reactDom2["default"].findDOMNode(_this.refs.sidebar);
+	      var width = sidebar.offsetWidth;
+	      var height = sidebar.offsetHeight;
+	
+	      if (width !== _this.state.sidebarWidth) {
+	        _this.setState({ sidebarWidth: width });
+	      }
+	      if (height !== _this.state.sidebarHeight) {
+	        _this.setState({ sidebarHeight: height });
+	      }
+	    };
+	
+	    _this.touchSidebarWidth = function () {
+	      // if the sidebar is open and start point of drag is inside the sidebar
+	      // we will only drag the distance they moved their finger
+	      // otherwise we will move the sidebar to be below the finger.
+	      if (_this.props.position === 'right') {
+	        if (_this.props.open && window.innerWidth - _this.state.touchStartX < _this.state.sidebarWidth) {
+	          if (_this.state.touchCurrentX > _this.state.touchStartX) {
+	            return _this.state.sidebarWidth + _this.state.touchStartX - _this.state.touchCurrentX;
+	          }
+	          return _this.state.sidebarWidth;
+	        }
+	        return Math.min(window.innerWidth - _this.state.touchCurrentX, _this.state.sidebarWidth);
+	      }
+	
+	      if (_this.props.position === 'left') {
+	        if (_this.props.open && _this.state.touchStartX < _this.state.sidebarWidth) {
+	          if (_this.state.touchCurrentX > _this.state.touchStartX) {
+	            return _this.state.sidebarWidth;
+	          }
+	          return _this.state.sidebarWidth - _this.state.touchStartX + _this.state.touchCurrentX;
+	        }
+	        return Math.min(_this.state.touchCurrentX, _this.state.sidebarWidth);
+	      }
+	    };
+	
+	    _this.touchSidebarHeight = function () {
+	      // if the sidebar is open and start point of drag is inside the sidebar
+	      // we will only drag the distance they moved their finger
+	      // otherwise we will move the sidebar to be below the finger.
+	      if (_this.props.position === 'bottom') {
+	        if (_this.props.open && window.innerHeight - _this.state.touchStartY < _this.state.sidebarHeight) {
+	          if (_this.state.touchCurrentY > _this.state.touchStartY) {
+	            return _this.state.sidebarHeight + _this.state.touchStartY - _this.state.touchCurrentY;
+	          }
+	          return _this.state.sidebarHeight;
+	        }
+	        return Math.min(window.innerHeight - _this.state.touchCurrentY, _this.state.sidebarHeight);
+	      }
+	
+	      if (_this.props.position === 'top') {
+	        if (_this.props.open && _this.state.touchStartY < _this.state.sidebarHeight) {
+	          if (_this.state.touchCurrentY > _this.state.touchStartY) {
+	            return _this.state.sidebarHeight;
+	          }
+	          return _this.state.sidebarHeight - _this.state.touchStartY + _this.state.touchCurrentY;
+	        }
+	        return Math.min(_this.state.touchCurrentY, _this.state.sidebarHeight);
+	      }
+	    };
+	
+	    _this.renderStyle = function (_ref) {
+	      var sidebarStyle = _ref.sidebarStyle;
+	      var isTouching = _ref.isTouching;
+	      var overlayStyle = _ref.overlayStyle;
+	      var contentStyle = _ref.contentStyle;
+	
+	      if (_this.props.position === 'right' || _this.props.position === 'left') {
+	        sidebarStyle.transform = 'translateX(0%)';
+	        sidebarStyle.WebkitTransform = 'translateX(0%)';
+	        if (isTouching) {
+	          var percentage = _this.touchSidebarWidth() / _this.state.sidebarWidth;
+	          // slide open to what we dragged
+	          if (_this.props.position === 'right') {
+	            sidebarStyle.transform = 'translateX(' + (1 - percentage) * 100 + '%)';
+	            sidebarStyle.WebkitTransform = 'translateX(' + (1 - percentage) * 100 + '%)';
+	          }
+	          if (_this.props.position === 'left') {
+	            sidebarStyle.transform = 'translateX(-' + (1 - percentage) * 100 + '%)';
+	            sidebarStyle.WebkitTransform = 'translateX(-' + (1 - percentage) * 100 + '%)';
+	          }
+	          // fade overlay to match distance of drag
+	          overlayStyle.opacity = percentage;
+	          overlayStyle.visibility = 'visible';
+	        }
+	        if (contentStyle) {
+	          contentStyle[_this.props.position] = _this.state.sidebarWidth + 'px';
+	        }
+	      }
+	      if (_this.props.position === 'top' || _this.props.position === 'bottom') {
+	        sidebarStyle.transform = 'translateY(0%)';
+	        sidebarStyle.WebkitTransform = 'translateY(0%)';
+	        if (isTouching) {
+	          var _percentage = _this.touchSidebarHeight() / _this.state.sidebarWidth;
+	          // slide open to what we dragged
+	          if (_this.props.position === 'bottom') {
+	            sidebarStyle.transform = 'translateY(' + (1 - _percentage) * 100 + '%)';
+	            sidebarStyle.WebkitTransform = 'translateY(' + (1 - _percentage) * 100 + '%)';
+	          }
+	          if (_this.props.position === 'top') {
+	            sidebarStyle.transform = 'translateY(-' + (1 - _percentage) * 100 + '%)';
+	            sidebarStyle.WebkitTransform = 'translateY(-' + (1 - _percentage) * 100 + '%)';
+	          }
+	          // fade overlay to match distance of drag
+	          overlayStyle.opacity = _percentage;
+	          overlayStyle.visibility = 'visible';
+	        }
+	        if (contentStyle) {
+	          contentStyle[_this.props.position] = _this.state.sidebarHeight + 'px';
+	        }
+	      }
+	    };
+	
 	    _this.state = {
 	      // the detected width of the sidebar in pixels
 	      sidebarWidth: 0,
+	      sidebarHeight: 0,
 	
 	      // keep track of touching params
 	      touchIdentifier: null,
@@ -232,7 +399,7 @@ webpackJsonp([0,1],[
 	      dragSupported: (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && 'ontouchstart' in window
 	    };
 	
-	    _this.overlayClicked = _this.overlayClicked.bind(_this);
+	    _this.onOverlayClicked = _this.onOverlayClicked.bind(_this);
 	    _this.onTouchStart = _this.onTouchStart.bind(_this);
 	    _this.onTouchMove = _this.onTouchMove.bind(_this);
 	    _this.onTouchEnd = _this.onTouchEnd.bind(_this);
@@ -243,14 +410,21 @@ webpackJsonp([0,1],[
 	  _createClass(Drawer, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.saveSidebarWidth();
+	      this.saveSidebarSize();
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
 	      // filter out the updates when we're touching
 	      if (!this.isTouching()) {
-	        this.saveSidebarWidth();
+	        this.saveSidebarSize();
+	      }
+	    }
+	  }, {
+	    key: 'onOverlayClicked',
+	    value: function onOverlayClicked() {
+	      if (this.props.open) {
+	        this.props.onSetOpen(false);
 	      }
 	    }
 	  }, {
@@ -295,6 +469,12 @@ webpackJsonp([0,1],[
 	          this.props.onSetOpen(!this.props.open);
 	        }
 	
+	        var touchHeight = this.touchSidebarHeight();
+	
+	        if (this.props.open && touchHeight < this.state.sidebarHeight - this.props.dragToggleDistance || !this.props.open && touchHeight > this.props.dragToggleDistance) {
+	          this.props.onSetOpen(!this.props.open);
+	        }
+	
 	        this.setState({
 	          touchIdentifier: null,
 	          touchStartX: null,
@@ -325,66 +505,11 @@ webpackJsonp([0,1],[
 	
 	    // True if the on going gesture X distance is less than the cancel distance
 	
-	  }, {
-	    key: 'inCancelDistanceOnScroll',
-	    value: function inCancelDistanceOnScroll() {
-	      var cancelDistanceOnScroll = void 0;
-	
-	      if (this.props.pullRight) {
-	        cancelDistanceOnScroll = Math.abs(this.state.touchCurrentX - this.state.touchStartX) < CANCEL_DISTANCE_ON_SCROLL;
-	      } else {
-	        cancelDistanceOnScroll = Math.abs(this.state.touchStartX - this.state.touchCurrentX) < CANCEL_DISTANCE_ON_SCROLL;
-	      }
-	      return cancelDistanceOnScroll;
-	    }
-	  }, {
-	    key: 'isTouching',
-	    value: function isTouching() {
-	      return this.state.touchIdentifier !== null;
-	    }
-	  }, {
-	    key: 'overlayClicked',
-	    value: function overlayClicked() {
-	      if (this.props.open) {
-	        this.props.onSetOpen(false);
-	      }
-	    }
-	  }, {
-	    key: 'saveSidebarWidth',
-	    value: function saveSidebarWidth() {
-	      var width = _reactDom2["default"].findDOMNode(this.refs.sidebar).offsetWidth;
-	
-	      if (width !== this.state.sidebarWidth) {
-	        this.setState({ sidebarWidth: width });
-	      }
-	    }
 	
 	    // calculate the sidebarWidth based on current touch info
 	
-	  }, {
-	    key: 'touchSidebarWidth',
-	    value: function touchSidebarWidth() {
-	      // if the sidebar is open and start point of drag is inside the sidebar
-	      // we will only drag the distance they moved their finger
-	      // otherwise we will move the sidebar to be below the finger.
-	      if (this.props.pullRight) {
-	        if (this.props.open && window.innerWidth - this.state.touchStartX < this.state.sidebarWidth) {
-	          if (this.state.touchCurrentX > this.state.touchStartX) {
-	            return this.state.sidebarWidth + this.state.touchStartX - this.state.touchCurrentX;
-	          }
-	          return this.state.sidebarWidth;
-	        }
-	        return Math.min(window.innerWidth - this.state.touchCurrentX, this.state.sidebarWidth);
-	      }
+	    // calculate the sidebarHeight based on current touch info
 	
-	      if (this.props.open && this.state.touchStartX < this.state.sidebarWidth) {
-	        if (this.state.touchCurrentX > this.state.touchStartX) {
-	          return this.state.sidebarWidth;
-	        }
-	        return this.state.sidebarWidth - this.state.touchStartX + this.state.touchCurrentX;
-	      }
-	      return Math.min(this.state.touchCurrentX, this.state.sidebarWidth);
-	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -398,41 +523,18 @@ webpackJsonp([0,1],[
 	      var isTouching = this.isTouching();
 	      var dragHandle = void 0;
 	
-	      rootProps.className = props.pullRight ? (0, _classnames2["default"])(props.className, props.prefixCls, props.prefixCls + '-right') : (0, _classnames2["default"])(props.className, props.prefixCls, props.prefixCls + '-left');
+	      rootProps.className = (0, _classnames2["default"])(props.className, props.prefixCls, props.prefixCls + '-' + props.position);
 	
 	      if (isTouching) {
-	        var percentage = this.touchSidebarWidth() / this.state.sidebarWidth;
-	
-	        // slide open to what we dragged
-	        if (this.props.pullRight) {
-	          sidebarStyle.transform = 'translateX(' + (1 - percentage) * 100 + '%)';
-	          sidebarStyle.WebkitTransform = 'translateX(' + (1 - percentage) * 100 + '%)';
-	        } else {
-	          sidebarStyle.transform = 'translateX(-' + (1 - percentage) * 100 + '%)';
-	          sidebarStyle.WebkitTransform = 'translateX(-' + (1 - percentage) * 100 + '%)';
-	        }
-	
-	        // fade overlay to match distance of drag
-	        overlayStyle.opacity = percentage;
-	        overlayStyle.visibility = 'visible';
+	        this.renderStyle({ sidebarStyle: sidebarStyle, isTouching: true, overlayStyle: overlayStyle });
 	      } else if (this.props.docked) {
 	        // show sidebar
 	        if (this.state.sidebarWidth !== 0) {
-	          sidebarStyle.transform = 'translateX(0%)';
-	          sidebarStyle.WebkitTransform = 'translateX(0%)';
-	        }
-	
-	        // make space on the left/right side of the content for the sidebar
-	        if (this.props.pullRight) {
-	          contentStyle.right = this.state.sidebarWidth + 'px';
-	        } else {
-	          contentStyle.left = this.state.sidebarWidth + 'px';
+	          this.renderStyle({ sidebarStyle: sidebarStyle, contentStyle: contentStyle });
 	        }
 	      } else if (this.props.open) {
 	        // slide open sidebar
-	        sidebarStyle.transform = 'translateX(0%)';
-	        sidebarStyle.WebkitTransform = 'translateX(0%)';
-	
+	        this.renderStyle({ sidebarStyle: sidebarStyle });
 	        // show overlay
 	        overlayStyle.opacity = 1;
 	        overlayStyle.visibility = 'visible';
@@ -456,9 +558,9 @@ webpackJsonp([0,1],[
 	          var dragHandleStyle = _extends({}, props.dragHandleStyle);
 	          dragHandleStyle.width = this.props.touchHandleWidth;
 	
-	          if (this.props.pullRight) {
+	          if (this.props.position === 'right') {
 	            dragHandleStyle.right = 0;
-	          } else {
+	          } else if (this.props.position === 'left') {
 	            dragHandleStyle.left = 0;
 	          }
 	
@@ -481,8 +583,8 @@ webpackJsonp([0,1],[
 	          this.props.sidebar
 	        ),
 	        _react2["default"].createElement('div', { className: prefixCls + '-overlay', style: overlayStyle,
-	          onClick: this.overlayClicked,
-	          onTouchTap: this.overlayClicked,
+	          onClick: this.onOverlayClicked,
+	          onTouchTap: this.onOverlayClicked,
 	          ref: 'overlay'
 	        }),
 	        _react2["default"].createElement(
@@ -532,8 +634,8 @@ webpackJsonp([0,1],[
 	  // max distance from the edge we can start touching
 	  touchHandleWidth: _react2["default"].PropTypes.number,
 	
-	  // Place the sidebar on the right
-	  pullRight: _react2["default"].PropTypes.bool,
+	  // where to place the sidebar
+	  position: _react2["default"].PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
 	
 	  // distance we have to drag the sidebar to toggle open state
 	  dragToggleDistance: _react2["default"].PropTypes.number,
@@ -552,7 +654,7 @@ webpackJsonp([0,1],[
 	  transitions: true,
 	  touch: true,
 	  touchHandleWidth: 20,
-	  pullRight: false,
+	  position: 'left',
 	  dragToggleDistance: 30,
 	  onSetOpen: function onSetOpen() {}
 	};

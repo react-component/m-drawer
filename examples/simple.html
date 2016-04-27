@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-drawer@0.1.0</title>
+  <title>simple.js - example - rc-drawer@0.2.0</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -258,79 +258,95 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-drawer@0.1.0</h1>
+      <h1>rc-drawer@0.2.0</h1>
 
       <p>drawer ui component for react</p>
     </div>
     <div class="example" id="__react-content"></div>
 
-    <div class="highlight"><pre><code language="js"><span class="hljs-comment">// use jsx to render html, do not modify simple.html</span>
+    <div class="highlight"><pre><code language="undefined">// use jsx to render html, do not modify simple.html
 
-<span class="hljs-keyword">import</span> <span class="hljs-string">'rc-drawer/assets/index.css'</span>;
-<span class="hljs-keyword">import</span> <span class="hljs-string">'./simple.less'</span>;
-<span class="hljs-keyword">import</span> Drawer <span class="hljs-keyword">from</span> <span class="hljs-string">'rc-drawer'</span>;
-<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+import 'rc-drawer/assets/index.css';
+import './simple.less';
+import Drawer from 'rc-drawer';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-<span class="hljs-keyword">const</span> App = React.createClass({
+const App = React.createClass({
   getInitialState() {
-    <span class="hljs-keyword">return</span> {
-      docked: <span class="hljs-literal">false</span>,
-      open: <span class="hljs-literal">false</span>,
-      transitions: <span class="hljs-literal">true</span>,
-      touch: <span class="hljs-literal">true</span>,
-      pullRight: <span class="hljs-literal">false</span>,
-      touchHandleWidth: <span class="hljs-number">20</span>,
-      dragToggleDistance: <span class="hljs-number">30</span>,
+    return {
+      docked: false,
+      open: false,
+      transitions: true,
+      touch: true,
+      position: 'left',
+      touchHandleWidth: 20,
+      dragToggleDistance: 30,
     };
   },
   onSetOpen(open) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'onSetOpen'</span>, open);
-    <span class="hljs-keyword">this</span>.setState({ open });
+    console.log('onSetOpen', open);
+    this.setState({ open });
   },
   onDock() {
-    <span class="hljs-keyword">const</span> docked = !<span class="hljs-keyword">this</span>.state.docked;
-    <span class="hljs-keyword">this</span>.setState({
+    const docked = !this.state.docked;
+    this.setState({
       docked,
     });
-    <span class="hljs-keyword">if</span> (!docked) {
-      <span class="hljs-keyword">this</span>.onSetOpen(<span class="hljs-literal">false</span>);
+    if (!docked) {
+      this.onSetOpen(false);
     }
   },
+  changePos(e) {
+    this.setState({
+      position: e.target.value,
+    });
+  },
   render() {
-    <span class="hljs-keyword">const</span> sidebar = (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">h3</span>&gt;</span>
+    const sidebar = (&lt;div&gt;
+      &lt;h3&gt;
         sidebar
-        <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{this.onDock}</span>&gt;</span>
+        &lt;button onClick={this.onDock}&gt;
           {this.state.docked ? 'unpin' : 'pin'}
-        <span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
-      <span class="hljs-tag">&lt;/<span class="hljs-title">h3</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>this is content!<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>)</span>;
+        &lt;/button&gt;
+      &lt;/h3&gt;
+      &lt;p&gt;this is content!&lt;/p&gt;
+    &lt;/div&gt;);
 
-    <span class="hljs-keyword">const</span> sidebarProps = {
-      docked: <span class="hljs-keyword">this</span>.state.docked,
-      open: <span class="hljs-keyword">this</span>.state.open,
-      touch: <span class="hljs-keyword">this</span>.state.touch,
-      pullRight: <span class="hljs-keyword">this</span>.state.pullRight,
-      touchHandleWidth: <span class="hljs-keyword">this</span>.state.touchHandleWidth,
-      dragToggleDistance: <span class="hljs-keyword">this</span>.state.dragToggleDistance,
-      transitions: <span class="hljs-keyword">this</span>.state.transitions,
-      onSetOpen: <span class="hljs-keyword">this</span>.onSetOpen,
+    const drawerProps = {
+      docked: this.state.docked,
+      open: this.state.open,
+      touch: this.state.touch,
+      position: this.state.position,
+      touchHandleWidth: this.state.touchHandleWidth,
+      dragToggleDistance: this.state.dragToggleDistance,
+      transitions: this.state.transitions,
+      onSetOpen: this.onSetOpen,
     };
-    <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">className</span>=<span class="hljs-value">"drawer-container"</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">Drawer</span> <span class="hljs-attribute">sidebar</span>=<span class="hljs-value">{sidebar}</span> {<span class="hljs-attribute">...sidebarProps</span>}&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>React Sidebar is a sidebar component for React.<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{()</span> =&gt;</span> {this.setState({ open: !this.state.open });}}&gt;switch-open<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-      <span class="hljs-tag">&lt;/<span class="hljs-title">Drawer</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>)</span>;
+    return (&lt;div className="drawer-container"&gt;
+      &lt;Drawer sidebar={sidebar} {...drawerProps}&gt;
+        &lt;div className="main"&gt;
+          &lt;p&gt;React component&lt;/p&gt;
+          &lt;button onClick={() =&gt; {this.setState({ open: !this.state.open });}}&gt;switch-open&lt;/button&gt;
+          &lt;p&gt;
+            {['left', 'right', 'top', 'bottom'].map((i, index) =&gt; (&lt;span
+              key={index} style={{ marginRight: 10 }}
+            &gt;
+              &lt;input type="radio" value={i} id={`pos-${index}`}
+                checked={this.state.position === i} onChange={this.changePos}
+              /&gt; &lt;label htmlFor={`pos-${index}`}&gt;{i}&lt;/label&gt;
+            &lt;/span&gt;))}
+          &lt;/p&gt;
+          &lt;p style={{ float: 'right' }}&gt;right content&lt;/p&gt;
+          &lt;p style={{ position: 'absolute', bottom: 10 }}&gt;bottom content&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/Drawer&gt;
+    &lt;/div&gt;);
   },
 });
 
-ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">App</span> /&gt;</span>, document.getElementById('__react-content'));
-</span></code></pre></div>
+ReactDOM.render(&lt;App /&gt;, document.getElementById('__react-content'));
+</code></pre></div>
   </div>
   <a href="https://github.com/react-component/drawer">
     <img style="position: absolute; top: 0; right: 0; border: 0;"
