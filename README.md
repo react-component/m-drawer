@@ -74,7 +74,7 @@ React.render(<Drawer />, container);
 | sidebar | Anything React can render | n/a | The sidebar content |
 | onSetOpen | function | n/a | Callback called when the sidebar wants to change the open prop. Happens after sliding the sidebar and when the overlay is clicked when the sidebar is open. |
 | open | boolean | false | If the sidebar should be open |
-| position | string | left, enum{'left', 'right', 'top'} | where to place the sidebar |
+| position | string | left, enum{'left', 'right', 'top', 'bottom'} | where to place the sidebar |
 | docked | boolean | false | If the sidebar should be docked in document |
 | transitions | boolean | true | If transitions should be enabled |
 | touch | boolean | true | If touch gestures should be enabled |
