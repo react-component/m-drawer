@@ -37,8 +37,8 @@ export default class Drawer extends React.Component {
     // max distance from the edge we can start touching
     touchHandleWidth: React.PropTypes.number,
 
-    // Place the sidebar on the right
-    pullRight: React.PropTypes.bool,
+    // where to place the sidebar
+    position: React.PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
 
     // distance we have to drag the sidebar to toggle open state
     dragToggleDistance: React.PropTypes.number,
@@ -58,7 +58,7 @@ export default class Drawer extends React.Component {
     transitions: true,
     touch: true,
     touchHandleWidth: 20,
-    pullRight: false,
+    position: 'left',
     dragToggleDistance: 30,
     onSetOpen: () => {},
   }
@@ -69,6 +69,7 @@ export default class Drawer extends React.Component {
     this.state = {
       // the detected width of the sidebar in pixels
       sidebarWidth: 0,
+      sidebarHeight: 0,
 
       // keep track of touching params
       touchIdentifier: null,
@@ -81,7 +82,7 @@ export default class Drawer extends React.Component {
       dragSupported: typeof window === 'object' && 'ontouchstart' in window,
     };
 
-    this.overlayClicked = this.overlayClicked.bind(this);
+    this.onOverlayClicked = this.onOverlayClicked.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
@@ -89,13 +90,19 @@ export default class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    this.saveSidebarWidth();
+    this.saveSidebarSize();
   }
 
   componentDidUpdate() {
     // filter out the updates when we're touching
     if (!this.isTouching()) {
-      this.saveSidebarWidth();
+      this.saveSidebarSize();
+    }
+  }
+
+  onOverlayClicked() {
+    if (this.props.open) {
+      this.props.onSetOpen(false);
     }
   }
 
@@ -138,6 +145,14 @@ export default class Drawer extends React.Component {
         this.props.onSetOpen(!this.props.open);
       }
 
+      const touchHeight = this.touchSidebarHeight();
+
+      if (this.props.open &&
+          touchHeight < this.state.sidebarHeight - this.props.dragToggleDistance ||
+          !this.props.open && touchHeight > this.props.dragToggleDistance) {
+        this.props.onSetOpen(!this.props.open);
+      }
+
       this.setState({
         touchIdentifier: null,
         touchStartX: null,
@@ -164,43 +179,42 @@ export default class Drawer extends React.Component {
   }
 
   // True if the on going gesture X distance is less than the cancel distance
-  inCancelDistanceOnScroll() {
+  inCancelDistanceOnScroll = () => {
     let cancelDistanceOnScroll;
 
-    if (this.props.pullRight) {
+    if (this.props.position === 'right') {
       cancelDistanceOnScroll = Math.abs(this.state.touchCurrentX - this.state.touchStartX) <
                                         CANCEL_DISTANCE_ON_SCROLL;
-    } else {
+    } else if (this.props.position === 'left') {
       cancelDistanceOnScroll = Math.abs(this.state.touchStartX - this.state.touchCurrentX) <
                                         CANCEL_DISTANCE_ON_SCROLL;
     }
     return cancelDistanceOnScroll;
   }
 
-  isTouching() {
+  isTouching = () => {
     return this.state.touchIdentifier !== null;
   }
 
-  overlayClicked() {
-    if (this.props.open) {
-      this.props.onSetOpen(false);
-    }
-  }
-
-  saveSidebarWidth() {
-    const width = ReactDOM.findDOMNode(this.refs.sidebar).offsetWidth;
+  saveSidebarSize = () => {
+    const sidebar = ReactDOM.findDOMNode(this.refs.sidebar);
+    const width = sidebar.offsetWidth;
+    const height = sidebar.offsetHeight;
 
     if (width !== this.state.sidebarWidth) {
       this.setState({ sidebarWidth: width });
     }
+    if (height !== this.state.sidebarHeight) {
+      this.setState({ sidebarHeight: height });
+    }
   }
 
   // calculate the sidebarWidth based on current touch info
-  touchSidebarWidth() {
+  touchSidebarWidth = () => {
     // if the sidebar is open and start point of drag is inside the sidebar
     // we will only drag the distance they moved their finger
     // otherwise we will move the sidebar to be below the finger.
-    if (this.props.pullRight) {
+    if (this.props.position === 'right') {
       if (this.props.open && window.innerWidth - this.state.touchStartX < this.state.sidebarWidth) {
         if (this.state.touchCurrentX > this.state.touchStartX) {
           return this.state.sidebarWidth + this.state.touchStartX - this.state.touchCurrentX;
@@ -210,13 +224,88 @@ export default class Drawer extends React.Component {
       return Math.min(window.innerWidth - this.state.touchCurrentX, this.state.sidebarWidth);
     }
 
-    if (this.props.open && this.state.touchStartX < this.state.sidebarWidth) {
-      if (this.state.touchCurrentX > this.state.touchStartX) {
-        return this.state.sidebarWidth;
+    if (this.props.position === 'left') {
+      if (this.props.open && this.state.touchStartX < this.state.sidebarWidth) {
+        if (this.state.touchCurrentX > this.state.touchStartX) {
+          return this.state.sidebarWidth;
+        }
+        return this.state.sidebarWidth - this.state.touchStartX + this.state.touchCurrentX;
       }
-      return this.state.sidebarWidth - this.state.touchStartX + this.state.touchCurrentX;
+      return Math.min(this.state.touchCurrentX, this.state.sidebarWidth);
     }
-    return Math.min(this.state.touchCurrentX, this.state.sidebarWidth);
+  }
+  // calculate the sidebarHeight based on current touch info
+  touchSidebarHeight = () => {
+    // if the sidebar is open and start point of drag is inside the sidebar
+    // we will only drag the distance they moved their finger
+    // otherwise we will move the sidebar to be below the finger.
+    if (this.props.position === 'bottom') {
+      if (this.props.open &&
+        window.innerHeight - this.state.touchStartY < this.state.sidebarHeight) {
+        if (this.state.touchCurrentY > this.state.touchStartY) {
+          return this.state.sidebarHeight + this.state.touchStartY - this.state.touchCurrentY;
+        }
+        return this.state.sidebarHeight;
+      }
+      return Math.min(window.innerHeight - this.state.touchCurrentY, this.state.sidebarHeight);
+    }
+
+    if (this.props.position === 'top') {
+      if (this.props.open && this.state.touchStartY < this.state.sidebarHeight) {
+        if (this.state.touchCurrentY > this.state.touchStartY) {
+          return this.state.sidebarHeight;
+        }
+        return this.state.sidebarHeight - this.state.touchStartY + this.state.touchCurrentY;
+      }
+      return Math.min(this.state.touchCurrentY, this.state.sidebarHeight);
+    }
+  }
+
+  renderStyle = ({ sidebarStyle, isTouching, overlayStyle, contentStyle }) => {
+    if (this.props.position === 'right' || this.props.position === 'left') {
+      sidebarStyle.transform = `translateX(0%)`;
+      sidebarStyle.WebkitTransform = `translateX(0%)`;
+      if (isTouching) {
+        const percentage = this.touchSidebarWidth() / this.state.sidebarWidth;
+        // slide open to what we dragged
+        if (this.props.position === 'right') {
+          sidebarStyle.transform = `translateX(${(1 - percentage) * 100}%)`;
+          sidebarStyle.WebkitTransform = `translateX(${(1 - percentage) * 100}%)`;
+        }
+        if (this.props.position === 'left') {
+          sidebarStyle.transform = `translateX(-${(1 - percentage) * 100}%)`;
+          sidebarStyle.WebkitTransform = `translateX(-${(1 - percentage) * 100}%)`;
+        }
+        // fade overlay to match distance of drag
+        overlayStyle.opacity = percentage;
+        overlayStyle.visibility = 'visible';
+      }
+      if (contentStyle) {
+        contentStyle[this.props.position] = `${this.state.sidebarWidth}px`;
+      }
+    }
+    if (this.props.position === 'top' || this.props.position === 'bottom') {
+      sidebarStyle.transform = `translateY(0%)`;
+      sidebarStyle.WebkitTransform = `translateY(0%)`;
+      if (isTouching) {
+        const percentage = this.touchSidebarHeight() / this.state.sidebarWidth;
+        // slide open to what we dragged
+        if (this.props.position === 'bottom') {
+          sidebarStyle.transform = `translateY(${(1 - percentage) * 100}%)`;
+          sidebarStyle.WebkitTransform = `translateY(${(1 - percentage) * 100}%)`;
+        }
+        if (this.props.position === 'top') {
+          sidebarStyle.transform = `translateY(-${(1 - percentage) * 100}%)`;
+          sidebarStyle.WebkitTransform = `translateY(-${(1 - percentage) * 100}%)`;
+        }
+        // fade overlay to match distance of drag
+        overlayStyle.opacity = percentage;
+        overlayStyle.visibility = 'visible';
+      }
+      if (contentStyle) {
+        contentStyle[this.props.position] = `${this.state.sidebarHeight}px`;
+      }
+    }
   }
 
   render() {
@@ -230,43 +319,19 @@ export default class Drawer extends React.Component {
     const isTouching = this.isTouching();
     let dragHandle;
 
-    rootProps.className = props.pullRight ?
-      classNames(props.className, props.prefixCls, `${props.prefixCls}-right`) :
-      classNames(props.className, props.prefixCls, `${props.prefixCls}-left`);
+    rootProps.className = classNames(props.className, props.prefixCls,
+      `${props.prefixCls}-${props.position}`);
 
     if (isTouching) {
-      const percentage = this.touchSidebarWidth() / this.state.sidebarWidth;
-
-      // slide open to what we dragged
-      if (this.props.pullRight) {
-        sidebarStyle.transform = `translateX(${(1 - percentage) * 100}%)`;
-        sidebarStyle.WebkitTransform = `translateX(${(1 - percentage) * 100}%)`;
-      } else {
-        sidebarStyle.transform = `translateX(-${(1 - percentage) * 100}%)`;
-        sidebarStyle.WebkitTransform = `translateX(-${(1 - percentage) * 100}%)`;
-      }
-
-      // fade overlay to match distance of drag
-      overlayStyle.opacity = percentage;
-      overlayStyle.visibility = 'visible';
+      this.renderStyle({ sidebarStyle, isTouching: true, overlayStyle });
     } else if (this.props.docked) {
       // show sidebar
       if (this.state.sidebarWidth !== 0) {
-        sidebarStyle.transform = `translateX(0%)`;
-        sidebarStyle.WebkitTransform = `translateX(0%)`;
-      }
-
-      // make space on the left/right side of the content for the sidebar
-      if (this.props.pullRight) {
-        contentStyle.right = `${this.state.sidebarWidth}px`;
-      } else {
-        contentStyle.left = `${this.state.sidebarWidth}px`;
+        this.renderStyle({ sidebarStyle, contentStyle });
       }
     } else if (this.props.open) {
       // slide open sidebar
-      sidebarStyle.transform = `translateX(0%)`;
-      sidebarStyle.WebkitTransform = `translateX(0%)`;
-
+      this.renderStyle({ sidebarStyle });
       // show overlay
       overlayStyle.opacity = 1;
       overlayStyle.visibility = 'visible';
@@ -290,9 +355,9 @@ export default class Drawer extends React.Component {
         const dragHandleStyle = { ...props.dragHandleStyle };
         dragHandleStyle.width = this.props.touchHandleWidth;
 
-        if (this.props.pullRight) {
+        if (this.props.position === 'right') {
           dragHandleStyle.right = 0;
-        } else {
+        } else if (this.props.position === 'left') {
           dragHandleStyle.left = 0;
         }
 
@@ -313,8 +378,8 @@ export default class Drawer extends React.Component {
           {this.props.sidebar}
         </div>
         <div className={`${prefixCls}-overlay`} style={overlayStyle}
-          onClick={this.overlayClicked}
-          onTouchTap={this.overlayClicked}
+          onClick={this.onOverlayClicked}
+          onTouchTap={this.onOverlayClicked}
           ref="overlay"
         />
         <div className={`${prefixCls}-content`} style={contentStyle}

@@ -13,7 +13,7 @@ const App = React.createClass({
       open: false,
       transitions: true,
       touch: true,
-      pullRight: false,
+      position: 'left',
       touchHandleWidth: 20,
       dragToggleDistance: 30,
     };
@@ -31,6 +31,11 @@ const App = React.createClass({
       this.onSetOpen(false);
     }
   },
+  changePos(e) {
+    this.setState({
+      position: e.target.value,
+    });
+  },
   render() {
     const sidebar = (<div>
       <h3>
@@ -42,21 +47,32 @@ const App = React.createClass({
       <p>this is content!</p>
     </div>);
 
-    const sidebarProps = {
+    const drawerProps = {
       docked: this.state.docked,
       open: this.state.open,
       touch: this.state.touch,
-      pullRight: this.state.pullRight,
+      position: this.state.position,
       touchHandleWidth: this.state.touchHandleWidth,
       dragToggleDistance: this.state.dragToggleDistance,
       transitions: this.state.transitions,
       onSetOpen: this.onSetOpen,
     };
     return (<div className="drawer-container">
-      <Drawer sidebar={sidebar} {...sidebarProps}>
-        <div>
-          <p>React Sidebar is a sidebar component for React.</p>
+      <Drawer sidebar={sidebar} {...drawerProps}>
+        <div className="main">
+          <p>React component</p>
           <button onClick={() => {this.setState({ open: !this.state.open });}}>switch-open</button>
+          <p>
+            {['left', 'right', 'top', 'bottom'].map((i, index) => (<span
+              key={index} style={{ marginRight: 10 }}
+            >
+              <input type="radio" value={i} id={`pos-${index}`}
+                checked={this.state.position === i} onChange={this.changePos}
+              /> <label htmlFor={`pos-${index}`}>{i}</label>
+            </span>))}
+          </p>
+          <p style={{ float: 'right' }}>right content</p>
+          <p style={{ position: 'absolute', bottom: 10 }}>bottom content</p>
         </div>
       </Drawer>
     </div>);
