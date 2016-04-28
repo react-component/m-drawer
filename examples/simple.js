@@ -40,12 +40,11 @@ webpackJsonp([0,1],[
 	      transitions: true,
 	      touch: true,
 	      position: 'left',
-	      touchHandleWidth: 20,
 	      dragToggleDistance: 30
 	    };
 	  },
-	  onSetOpen: function onSetOpen(open) {
-	    console.log('onSetOpen', open);
+	  onOpenChange: function onOpenChange(open) {
+	    console.log('onOpenChange', open);
 	    this.setState({ open: open });
 	  },
 	  onDock: function onDock() {
@@ -54,7 +53,7 @@ webpackJsonp([0,1],[
 	      docked: docked
 	    });
 	    if (!docked) {
-	      this.onSetOpen(false);
+	      this.onOpenChange(false);
 	    }
 	  },
 	  changePos: function changePos(e) {
@@ -90,10 +89,9 @@ webpackJsonp([0,1],[
 	      open: this.state.open,
 	      touch: this.state.touch,
 	      position: this.state.position,
-	      touchHandleWidth: this.state.touchHandleWidth,
 	      dragToggleDistance: this.state.dragToggleDistance,
 	      transitions: this.state.transitions,
-	      onSetOpen: this.onSetOpen
+	      onOpenChange: this.onOpenChange
 	    };
 	    return _react2["default"].createElement(
 	      'div',
@@ -243,6 +241,18 @@ webpackJsonp([0,1],[
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	function getOffset(ele) {
+	  var el = ele;
+	  var _x = 0;
+	  var _y = 0;
+	  while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+	    _x += el.offsetLeft - el.scrollLeft;
+	    _y += el.offsetTop - el.scrollTop;
+	    el = el.offsetParent;
+	  }
+	  return { top: _y, left: _x };
+	}
+	
 	var CANCEL_DISTANCE_ON_SCROLL = 20;
 	
 	var Drawer = function (_React$Component) {
@@ -253,13 +263,94 @@ webpackJsonp([0,1],[
 	
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Drawer).call(this, props));
 	
+	    _this.onOverlayClicked = function () {
+	      if (_this.props.open) {
+	        _this.props.onOpenChange(false);
+	      }
+	    };
+	
+	    _this.onTouchStart = function (ev) {
+	      // filter out if a user starts swiping with a second finger
+	      if (!_this.isTouching()) {
+	        var touch = ev.targetTouches[0];
+	        _this.setState({
+	          touchIdentifier: touch.identifier,
+	          touchStartX: touch.clientX,
+	          touchStartY: touch.clientY,
+	          touchCurrentX: touch.clientX,
+	          touchCurrentY: touch.clientY
+	        });
+	      }
+	    };
+	
+	    _this.onTouchMove = function (ev) {
+	      ev.preventDefault();
+	      if (_this.isTouching()) {
+	        for (var ind = 0; ind < ev.targetTouches.length; ind++) {
+	          // we only care about the finger that we are tracking
+	          if (ev.targetTouches[ind].identifier === _this.state.touchIdentifier) {
+	            _this.setState({
+	              touchCurrentX: ev.targetTouches[ind].clientX,
+	              touchCurrentY: ev.targetTouches[ind].clientY
+	            });
+	            break;
+	          }
+	        }
+	      }
+	    };
+	
+	    _this.onTouchEnd = function () {
+	      if (_this.isTouching()) {
+	        // trigger a change to open if sidebar has been dragged beyond dragToggleDistance
+	        var touchWidth = _this.touchSidebarWidth();
+	
+	        if (_this.props.open && touchWidth < _this.state.sidebarWidth - _this.props.dragToggleDistance || !_this.props.open && touchWidth > _this.props.dragToggleDistance) {
+	          _this.props.onOpenChange(!_this.props.open);
+	        }
+	
+	        var touchHeight = _this.touchSidebarHeight();
+	
+	        if (_this.props.open && touchHeight < _this.state.sidebarHeight - _this.props.dragToggleDistance || !_this.props.open && touchHeight > _this.props.dragToggleDistance) {
+	          _this.props.onOpenChange(!_this.props.open);
+	        }
+	
+	        _this.setState({
+	          touchIdentifier: null,
+	          touchStartX: null,
+	          touchStartY: null,
+	          touchCurrentX: null,
+	          touchCurrentY: null
+	        });
+	      }
+	    };
+	
+	    _this.onScroll = function () {
+	      if (_this.isTouching() && _this.inCancelDistanceOnScroll()) {
+	        _this.setState({
+	          touchIdentifier: null,
+	          touchStartX: null,
+	          touchStartY: null,
+	          touchCurrentX: null,
+	          touchCurrentY: null
+	        });
+	      }
+	    };
+	
 	    _this.inCancelDistanceOnScroll = function () {
 	      var cancelDistanceOnScroll = void 0;
-	
-	      if (_this.props.position === 'right') {
-	        cancelDistanceOnScroll = Math.abs(_this.state.touchCurrentX - _this.state.touchStartX) < CANCEL_DISTANCE_ON_SCROLL;
-	      } else if (_this.props.position === 'left') {
-	        cancelDistanceOnScroll = Math.abs(_this.state.touchStartX - _this.state.touchCurrentX) < CANCEL_DISTANCE_ON_SCROLL;
+	      switch (_this.props.position) {
+	        case 'right':
+	          cancelDistanceOnScroll = Math.abs(_this.state.touchCurrentX - _this.state.touchStartX) < CANCEL_DISTANCE_ON_SCROLL;
+	          break;
+	        case 'bottom':
+	          cancelDistanceOnScroll = Math.abs(_this.state.touchCurrentY - _this.state.touchStartY) < CANCEL_DISTANCE_ON_SCROLL;
+	          break;
+	        case 'top':
+	          cancelDistanceOnScroll = Math.abs(_this.state.touchStartY - _this.state.touchCurrentY) < CANCEL_DISTANCE_ON_SCROLL;
+	          break;
+	        case 'left':
+	        default:
+	          cancelDistanceOnScroll = Math.abs(_this.state.touchStartX - _this.state.touchCurrentX) < CANCEL_DISTANCE_ON_SCROLL;
 	      }
 	      return cancelDistanceOnScroll;
 	    };
@@ -272,12 +363,20 @@ webpackJsonp([0,1],[
 	      var sidebar = _reactDom2["default"].findDOMNode(_this.refs.sidebar);
 	      var width = sidebar.offsetWidth;
 	      var height = sidebar.offsetHeight;
+	      var sidebarTop = getOffset(_reactDom2["default"].findDOMNode(_this.refs.sidebar)).top;
+	      var dragHandleTop = getOffset(_reactDom2["default"].findDOMNode(_this.refs.dragHandle)).top;
 	
 	      if (width !== _this.state.sidebarWidth) {
 	        _this.setState({ sidebarWidth: width });
 	      }
 	      if (height !== _this.state.sidebarHeight) {
 	        _this.setState({ sidebarHeight: height });
+	      }
+	      if (sidebarTop !== _this.state.sidebarTop) {
+	        _this.setState({ sidebarTop: sidebarTop });
+	      }
+	      if (dragHandleTop !== _this.state.dragHandleTop) {
+	        _this.setState({ dragHandleTop: dragHandleTop });
 	      }
 	    };
 	
@@ -321,13 +420,14 @@ webpackJsonp([0,1],[
 	      }
 	
 	      if (_this.props.position === 'top') {
-	        if (_this.props.open && _this.state.touchStartY < _this.state.sidebarHeight) {
+	        var touchStartOffsetY = _this.state.touchStartY - _this.state.sidebarTop;
+	        if (_this.props.open && touchStartOffsetY < _this.state.sidebarHeight) {
 	          if (_this.state.touchCurrentY > _this.state.touchStartY) {
 	            return _this.state.sidebarHeight;
 	          }
 	          return _this.state.sidebarHeight - _this.state.touchStartY + _this.state.touchCurrentY;
 	        }
-	        return Math.min(_this.state.touchCurrentY, _this.state.sidebarHeight);
+	        return Math.min(_this.state.touchCurrentY - _this.state.dragHandleTop, _this.state.sidebarHeight);
 	      }
 	    };
 	
@@ -363,7 +463,7 @@ webpackJsonp([0,1],[
 	        sidebarStyle.transform = 'translateY(0%)';
 	        sidebarStyle.WebkitTransform = 'translateY(0%)';
 	        if (isTouching) {
-	          var _percentage = _this.touchSidebarHeight() / _this.state.sidebarWidth;
+	          var _percentage = _this.touchSidebarHeight() / _this.state.sidebarHeight;
 	          // slide open to what we dragged
 	          if (_this.props.position === 'bottom') {
 	            sidebarStyle.transform = 'translateY(' + (1 - _percentage) * 100 + '%)';
@@ -387,6 +487,8 @@ webpackJsonp([0,1],[
 	      // the detected width of the sidebar in pixels
 	      sidebarWidth: 0,
 	      sidebarHeight: 0,
+	      sidebarTop: 0,
+	      dragHandleTop: 0,
 	
 	      // keep track of touching params
 	      touchIdentifier: null,
@@ -398,12 +500,6 @@ webpackJsonp([0,1],[
 	      // if touch is supported by the browser
 	      dragSupported: (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && 'ontouchstart' in window
 	    };
-	
-	    _this.onOverlayClicked = _this.onOverlayClicked.bind(_this);
-	    _this.onTouchStart = _this.onTouchStart.bind(_this);
-	    _this.onTouchMove = _this.onTouchMove.bind(_this);
-	    _this.onTouchEnd = _this.onTouchEnd.bind(_this);
-	    _this.onScroll = _this.onScroll.bind(_this);
 	    return _this;
 	  }
 	
@@ -420,88 +516,11 @@ webpackJsonp([0,1],[
 	        this.saveSidebarSize();
 	      }
 	    }
-	  }, {
-	    key: 'onOverlayClicked',
-	    value: function onOverlayClicked() {
-	      if (this.props.open) {
-	        this.props.onSetOpen(false);
-	      }
-	    }
-	  }, {
-	    key: 'onTouchStart',
-	    value: function onTouchStart(ev) {
-	      // filter out if a user starts swiping with a second finger
-	      if (!this.isTouching()) {
-	        var touch = ev.targetTouches[0];
-	        this.setState({
-	          touchIdentifier: touch.identifier,
-	          touchStartX: touch.clientX,
-	          touchStartY: touch.clientY,
-	          touchCurrentX: touch.clientX,
-	          touchCurrentY: touch.clientY
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'onTouchMove',
-	    value: function onTouchMove(ev) {
-	      if (this.isTouching()) {
-	        for (var ind = 0; ind < ev.targetTouches.length; ind++) {
-	          // we only care about the finger that we are tracking
-	          if (ev.targetTouches[ind].identifier === this.state.touchIdentifier) {
-	            this.setState({
-	              touchCurrentX: ev.targetTouches[ind].clientX,
-	              touchCurrentY: ev.targetTouches[ind].clientY
-	            });
-	            break;
-	          }
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'onTouchEnd',
-	    value: function onTouchEnd() {
-	      if (this.isTouching()) {
-	        // trigger a change to open if sidebar has been dragged beyond dragToggleDistance
-	        var touchWidth = this.touchSidebarWidth();
-	
-	        if (this.props.open && touchWidth < this.state.sidebarWidth - this.props.dragToggleDistance || !this.props.open && touchWidth > this.props.dragToggleDistance) {
-	          this.props.onSetOpen(!this.props.open);
-	        }
-	
-	        var touchHeight = this.touchSidebarHeight();
-	
-	        if (this.props.open && touchHeight < this.state.sidebarHeight - this.props.dragToggleDistance || !this.props.open && touchHeight > this.props.dragToggleDistance) {
-	          this.props.onSetOpen(!this.props.open);
-	        }
-	
-	        this.setState({
-	          touchIdentifier: null,
-	          touchStartX: null,
-	          touchStartY: null,
-	          touchCurrentX: null,
-	          touchCurrentY: null
-	        });
-	      }
-	    }
 	
 	    // This logic helps us prevents the user from sliding the sidebar horizontally
 	    // while scrolling the sidebar vertically. When a scroll event comes in, we're
 	    // cancelling the ongoing gesture if it did not move horizontally much.
 	
-	  }, {
-	    key: 'onScroll',
-	    value: function onScroll() {
-	      if (this.isTouching() && this.inCancelDistanceOnScroll()) {
-	        this.setState({
-	          touchIdentifier: null,
-	          touchStartX: null,
-	          touchStartY: null,
-	          touchCurrentX: null,
-	          touchCurrentY: null
-	        });
-	      }
-	    }
 	
 	    // True if the on going gesture X distance is less than the cancel distance
 	
@@ -556,13 +575,6 @@ webpackJsonp([0,1],[
 	          rootProps.onScroll = this.onScroll;
 	        } else {
 	          var dragHandleStyle = _extends({}, props.dragHandleStyle);
-	          dragHandleStyle.width = this.props.touchHandleWidth;
-	
-	          if (this.props.position === 'right') {
-	            dragHandleStyle.right = 0;
-	          } else if (this.props.position === 'left') {
-	            dragHandleStyle.left = 0;
-	          }
 	
 	          dragHandle = _react2["default"].createElement('div', { className: prefixCls + '-draghandle', style: dragHandleStyle,
 	            onTouchStart: this.onTouchStart, onTouchMove: this.onTouchMove,
@@ -631,9 +643,6 @@ webpackJsonp([0,1],[
 	  // boolean if touch gestures are enabled
 	  touch: _react2["default"].PropTypes.bool,
 	
-	  // max distance from the edge we can start touching
-	  touchHandleWidth: _react2["default"].PropTypes.number,
-	
 	  // where to place the sidebar
 	  position: _react2["default"].PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
 	
@@ -641,7 +650,7 @@ webpackJsonp([0,1],[
 	  dragToggleDistance: _react2["default"].PropTypes.number,
 	
 	  // callback called when the overlay is clicked
-	  onSetOpen: _react2["default"].PropTypes.func
+	  onOpenChange: _react2["default"].PropTypes.func
 	};
 	Drawer.defaultProps = {
 	  prefixCls: 'rc-drawer',
@@ -653,10 +662,9 @@ webpackJsonp([0,1],[
 	  open: false,
 	  transitions: true,
 	  touch: true,
-	  touchHandleWidth: 20,
 	  position: 'left',
 	  dragToggleDistance: 30,
-	  onSetOpen: function onSetOpen() {}
+	  onOpenChange: function onOpenChange() {}
 	};
 	exports["default"] = Drawer;
 	module.exports = exports['default'];

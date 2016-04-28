@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-drawer@0.2.0 - drawer ui component for react</title>
+  <title>rc-drawer@0.3.0 - drawer ui component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,7 +737,7 @@
 
 <body>
 <div class="header">
-  <h1>rc-drawer@0.2.0</h1>
+  <h1>rc-drawer@0.3.0</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
@@ -825,7 +825,7 @@ React.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-titl
 <td>The sidebar content</td>
 </tr>
 <tr>
-<td>onSetOpen</td>
+<td>onOpenChange</td>
 <td>function</td>
 <td>n/a</td>
 <td>Callback called when the sidebar wants to change the open prop. Happens after sliding the sidebar and when the overlay is clicked when the sidebar is open.</td>
@@ -859,12 +859,6 @@ React.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-titl
 <td>boolean</td>
 <td>true</td>
 <td>If touch gestures should be enabled</td>
-</tr>
-<tr>
-<td>touchHandleWidth</td>
-<td>number</td>
-<td>20</td>
-<td>Width in pixels you can start dragging from the edge when the sidebar is closed.</td>
 </tr>
 <tr>
 <td>dragToggleDistance</td>
