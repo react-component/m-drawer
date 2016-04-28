@@ -62,23 +62,23 @@ React.render(<Drawer />, container);
 
 ### props
 
-| Property name | Type | Default | Description |
-|---------------|------|---------|-------------|
-| className | String | '' | additional css class of root dom node |
-| prefixCls | String | 'rci-sidebar' | prefix class |
-| children | Anything React can render | n/a | The main content |
-| sidebarStyle | object | {} | Inline styles. |
-| contentStyle | object | {} | Inline styles. |
-| overlayStyle | object | {} | Inline styles. |
-| dragHandleStyle | object | {} | Inline styles. |
-| sidebar | Anything React can render | n/a | The sidebar content |
-| onOpenChange | function | n/a | Callback called when the sidebar wants to change the open prop. Happens after sliding the sidebar and when the overlay is clicked when the sidebar is open. |
-| open | boolean | false | If the sidebar should be open |
-| position | string | left, enum{'left', 'right', 'top', 'bottom'} | where to place the sidebar |
-| docked | boolean | false | If the sidebar should be docked in document |
-| transitions | boolean | true | If transitions should be enabled |
-| touch | boolean | true | If touch gestures should be enabled |
-| dragToggleDistance | number | 30 | Distance the sidebar has to be dragged before it will open/close after it is released. |
+| Property name | Description | Type | Default |
+|---------------|-------------|------|---------|
+| className | additional css class of root dom node | String | '' |
+| prefixCls | prefix class | String | 'rc-drawer' |
+| children | The main content | any | n/a |
+| sidebarStyle | Inline styles. | Object | {} |
+| contentStyle | Inline styles. | Object | {} |
+| overlayStyle | Inline styles. | Object | {} |
+| dragHandleStyle | Inline styles. | Object | {} |
+| sidebar | The sidebar content | any | n/a |
+| onOpenChange | Callback called when the sidebar wants to change the open prop. Happens after sliding the sidebar and when the overlay is clicked when the sidebar is open. | Function | n/a |
+| open | If the sidebar should be open | Boolean | false |
+| position | where to place the sidebar | String | 'left', enum{'left', 'right', 'top', 'bottom'} |
+| docked | If the sidebar should be docked in document | Boolean | false |
+| transitions | If transitions should be enabled | Boolean | true |
+| touch | If touch gestures should be enabled | Boolean | true |
+| dragToggleDistance | Distance the sidebar has to be dragged before it will open/close after it is released. | Number | 30 |
 
 > change from [https://github.com/balloob/react-sidebar](https://github.com/balloob/react-sidebar)
 
