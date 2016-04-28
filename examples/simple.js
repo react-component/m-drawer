@@ -14,12 +14,11 @@ const App = React.createClass({
       transitions: true,
       touch: true,
       position: 'left',
-      touchHandleWidth: 20,
       dragToggleDistance: 30,
     };
   },
-  onSetOpen(open) {
-    console.log('onSetOpen', open);
+  onOpenChange(open) {
+    console.log('onOpenChange', open);
     this.setState({ open });
   },
   onDock() {
@@ -28,7 +27,7 @@ const App = React.createClass({
       docked,
     });
     if (!docked) {
-      this.onSetOpen(false);
+      this.onOpenChange(false);
     }
   },
   changePos(e) {
@@ -52,10 +51,9 @@ const App = React.createClass({
       open: this.state.open,
       touch: this.state.touch,
       position: this.state.position,
-      touchHandleWidth: this.state.touchHandleWidth,
       dragToggleDistance: this.state.dragToggleDistance,
       transitions: this.state.transitions,
-      onSetOpen: this.onSetOpen,
+      onOpenChange: this.onOpenChange,
     };
     return (<div className="drawer-container">
       <Drawer sidebar={sidebar} {...drawerProps}>

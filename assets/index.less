@@ -14,14 +14,10 @@
     will-change: transform;
     overflow-y: auto;
   }
-  &-content {
+  &-draghandle {
+    z-index: 1;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
-    transition: left .3s ease-out, right .3s ease-out;
+    background-color: rgba(50, 50, 50, 0.2);
   }
   &-overlay {
     z-index: 1;
@@ -35,31 +31,41 @@
     transition: opacity 0.3s ease-out;
     background-color: rgba(0, 0, 0, 0.3);
   }
-  &-draghandle {
-    z-index: 1;
-    position: fixed;
+  &-content {
+    position: absolute;
     top: 0;
+    left: 0;
+    right: 0;
     bottom: 0;
-    width: 20px;
-    background-color: rgba(50, 50, 50, 0.2);
-    &::after {
-      content: '||';
-      position: absolute;
-      top: 48%;
-      left: 1px;
-    }
+    overflow: auto;
+    transition: left .3s ease-out, right .3s ease-out;
   }
 
   &&-left, &&-right {
-    .@{drawerPrefixCls}-sidebar {
+    .@{drawerPrefixCls}-sidebar,
+    .@{drawerPrefixCls}-draghandle {
       top: 0;
       bottom: 0;
     }
+    .@{drawerPrefixCls}-draghandle {
+      width: 20px;
+      &::after {
+        content: '||';
+        position: absolute;
+        top: 48%;
+        left: 1px;
+      }
+    }
   }
   &&-top, &&-bottom {
-    .@{drawerPrefixCls}-sidebar {
+    .@{drawerPrefixCls}-sidebar,
+    .@{drawerPrefixCls}-draghandle {
       left: 0;
       right: 0;
+    }
+    .@{drawerPrefixCls}-draghandle {
+      width: 100%;
+      height: 20px;
     }
   }
   &&-left {
@@ -68,12 +74,18 @@
       transform: translateX(-100%);
       box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
     }
+    .@{drawerPrefixCls}-draghandle {
+      left: 0;
+    }
   }
   &&-right {
     .@{drawerPrefixCls}-sidebar {
       right: 0;
       transform: translateX(100%);
       box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
+    }
+    .@{drawerPrefixCls}-draghandle {
+      right: 0;
     }
   }
   &&-top {
@@ -82,12 +94,18 @@
       transform: translateY(-100%);
       box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
     }
+    .@{drawerPrefixCls}-draghandle {
+      top: 0;
+    }
   }
   &&-bottom {
     .@{drawerPrefixCls}-sidebar {
       bottom: 0;
       transform: translateY(100%);
       box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
+    }
+    .@{drawerPrefixCls}-draghandle {
+      bottom: 0;
     }
   }
 }

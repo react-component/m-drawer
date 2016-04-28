@@ -2,6 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
+function getOffset(ele) {
+  let el = ele;
+  let _x = 0;
+  let _y = 0;
+  while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+    _x += el.offsetLeft - el.scrollLeft;
+    _y += el.offsetTop - el.scrollTop;
+    el = el.offsetParent;
+  }
+  return { top: _y, left: _x };
+}
+
 const CANCEL_DISTANCE_ON_SCROLL = 20;
 
 export default class Drawer extends React.Component {
@@ -34,9 +46,6 @@ export default class Drawer extends React.Component {
     // boolean if touch gestures are enabled
     touch: React.PropTypes.bool,
 
-    // max distance from the edge we can start touching
-    touchHandleWidth: React.PropTypes.number,
-
     // where to place the sidebar
     position: React.PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
 
@@ -44,7 +53,7 @@ export default class Drawer extends React.Component {
     dragToggleDistance: React.PropTypes.number,
 
     // callback called when the overlay is clicked
-    onSetOpen: React.PropTypes.func,
+    onOpenChange: React.PropTypes.func,
   }
 
   static defaultProps = {
@@ -57,10 +66,9 @@ export default class Drawer extends React.Component {
     open: false,
     transitions: true,
     touch: true,
-    touchHandleWidth: 20,
     position: 'left',
     dragToggleDistance: 30,
-    onSetOpen: () => {},
+    onOpenChange: () => {},
   }
 
   constructor(props) {
@@ -70,6 +78,8 @@ export default class Drawer extends React.Component {
       // the detected width of the sidebar in pixels
       sidebarWidth: 0,
       sidebarHeight: 0,
+      sidebarTop: 0,
+      dragHandleTop: 0,
 
       // keep track of touching params
       touchIdentifier: null,
@@ -81,12 +91,6 @@ export default class Drawer extends React.Component {
       // if touch is supported by the browser
       dragSupported: typeof window === 'object' && 'ontouchstart' in window,
     };
-
-    this.onOverlayClicked = this.onOverlayClicked.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
-    this.onScroll = this.onScroll.bind(this);
   }
 
   componentDidMount() {
@@ -100,13 +104,13 @@ export default class Drawer extends React.Component {
     }
   }
 
-  onOverlayClicked() {
+  onOverlayClicked = () => {
     if (this.props.open) {
-      this.props.onSetOpen(false);
+      this.props.onOpenChange(false);
     }
   }
 
-  onTouchStart(ev) {
+  onTouchStart = (ev) => {
     // filter out if a user starts swiping with a second finger
     if (!this.isTouching()) {
       const touch = ev.targetTouches[0];
@@ -120,7 +124,8 @@ export default class Drawer extends React.Component {
     }
   }
 
-  onTouchMove(ev) {
+  onTouchMove = (ev) => {
+    ev.preventDefault();
     if (this.isTouching()) {
       for (let ind = 0; ind < ev.targetTouches.length; ind++) {
         // we only care about the finger that we are tracking
@@ -135,14 +140,14 @@ export default class Drawer extends React.Component {
     }
   }
 
-  onTouchEnd() {
+  onTouchEnd = () => {
     if (this.isTouching()) {
       // trigger a change to open if sidebar has been dragged beyond dragToggleDistance
       const touchWidth = this.touchSidebarWidth();
 
       if (this.props.open && touchWidth < this.state.sidebarWidth - this.props.dragToggleDistance ||
           !this.props.open && touchWidth > this.props.dragToggleDistance) {
-        this.props.onSetOpen(!this.props.open);
+        this.props.onOpenChange(!this.props.open);
       }
 
       const touchHeight = this.touchSidebarHeight();
@@ -150,7 +155,7 @@ export default class Drawer extends React.Component {
       if (this.props.open &&
           touchHeight < this.state.sidebarHeight - this.props.dragToggleDistance ||
           !this.props.open && touchHeight > this.props.dragToggleDistance) {
-        this.props.onSetOpen(!this.props.open);
+        this.props.onOpenChange(!this.props.open);
       }
 
       this.setState({
@@ -166,7 +171,7 @@ export default class Drawer extends React.Component {
   // This logic helps us prevents the user from sliding the sidebar horizontally
   // while scrolling the sidebar vertically. When a scroll event comes in, we're
   // cancelling the ongoing gesture if it did not move horizontally much.
-  onScroll() {
+  onScroll = () => {
     if (this.isTouching() && this.inCancelDistanceOnScroll()) {
       this.setState({
         touchIdentifier: null,
@@ -181,12 +186,22 @@ export default class Drawer extends React.Component {
   // True if the on going gesture X distance is less than the cancel distance
   inCancelDistanceOnScroll = () => {
     let cancelDistanceOnScroll;
-
-    if (this.props.position === 'right') {
-      cancelDistanceOnScroll = Math.abs(this.state.touchCurrentX - this.state.touchStartX) <
+    switch (this.props.position) {
+      case 'right':
+        cancelDistanceOnScroll = Math.abs(this.state.touchCurrentX - this.state.touchStartX) <
                                         CANCEL_DISTANCE_ON_SCROLL;
-    } else if (this.props.position === 'left') {
-      cancelDistanceOnScroll = Math.abs(this.state.touchStartX - this.state.touchCurrentX) <
+        break;
+      case 'bottom':
+        cancelDistanceOnScroll = Math.abs(this.state.touchCurrentY - this.state.touchStartY) <
+                                      CANCEL_DISTANCE_ON_SCROLL;
+        break;
+      case 'top':
+        cancelDistanceOnScroll = Math.abs(this.state.touchStartY - this.state.touchCurrentY) <
+                                        CANCEL_DISTANCE_ON_SCROLL;
+        break;
+      case 'left':
+      default:
+        cancelDistanceOnScroll = Math.abs(this.state.touchStartX - this.state.touchCurrentX) <
                                         CANCEL_DISTANCE_ON_SCROLL;
     }
     return cancelDistanceOnScroll;
@@ -200,12 +215,20 @@ export default class Drawer extends React.Component {
     const sidebar = ReactDOM.findDOMNode(this.refs.sidebar);
     const width = sidebar.offsetWidth;
     const height = sidebar.offsetHeight;
+    const sidebarTop = getOffset(ReactDOM.findDOMNode(this.refs.sidebar)).top;
+    const dragHandleTop = getOffset(ReactDOM.findDOMNode(this.refs.dragHandle)).top;
 
     if (width !== this.state.sidebarWidth) {
       this.setState({ sidebarWidth: width });
     }
     if (height !== this.state.sidebarHeight) {
       this.setState({ sidebarHeight: height });
+    }
+    if (sidebarTop !== this.state.sidebarTop) {
+      this.setState({ sidebarTop });
+    }
+    if (dragHandleTop !== this.state.dragHandleTop) {
+      this.setState({ dragHandleTop });
     }
   }
 
@@ -251,13 +274,15 @@ export default class Drawer extends React.Component {
     }
 
     if (this.props.position === 'top') {
-      if (this.props.open && this.state.touchStartY < this.state.sidebarHeight) {
+      const touchStartOffsetY = this.state.touchStartY - this.state.sidebarTop;
+      if (this.props.open && touchStartOffsetY < this.state.sidebarHeight) {
         if (this.state.touchCurrentY > this.state.touchStartY) {
           return this.state.sidebarHeight;
         }
         return this.state.sidebarHeight - this.state.touchStartY + this.state.touchCurrentY;
       }
-      return Math.min(this.state.touchCurrentY, this.state.sidebarHeight);
+      return Math.min(this.state.touchCurrentY - this.state.dragHandleTop,
+        this.state.sidebarHeight);
     }
   }
 
@@ -288,7 +313,7 @@ export default class Drawer extends React.Component {
       sidebarStyle.transform = `translateY(0%)`;
       sidebarStyle.WebkitTransform = `translateY(0%)`;
       if (isTouching) {
-        const percentage = this.touchSidebarHeight() / this.state.sidebarWidth;
+        const percentage = this.touchSidebarHeight() / this.state.sidebarHeight;
         // slide open to what we dragged
         if (this.props.position === 'bottom') {
           sidebarStyle.transform = `translateY(${(1 - percentage) * 100}%)`;
@@ -353,13 +378,6 @@ export default class Drawer extends React.Component {
         rootProps.onScroll = this.onScroll;
       } else {
         const dragHandleStyle = { ...props.dragHandleStyle };
-        dragHandleStyle.width = this.props.touchHandleWidth;
-
-        if (this.props.position === 'right') {
-          dragHandleStyle.right = 0;
-        } else if (this.props.position === 'left') {
-          dragHandleStyle.left = 0;
-        }
 
         dragHandle = (
           <div className={`${prefixCls}-draghandle`} style={dragHandleStyle}
