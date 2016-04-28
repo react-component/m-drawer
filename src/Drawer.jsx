@@ -89,7 +89,7 @@ export default class Drawer extends React.Component {
       touchCurrentY: null,
 
       // if touch is supported by the browser
-      dragSupported: typeof window === 'object' && 'ontouchstart' in window,
+      touchSupported: typeof window === 'object' && 'ontouchstart' in window,
     };
   }
 
@@ -340,9 +340,8 @@ export default class Drawer extends React.Component {
     const sidebarStyle = { ...props.sidebarStyle };
     const contentStyle = { ...props.contentStyle };
     const overlayStyle = { ...props.overlayStyle };
-    const useTouch = this.state.dragSupported && this.props.touch;
     const isTouching = this.isTouching();
-    let dragHandle;
+    let dragHandle = null;
 
     rootProps.className = classNames(props.className, props.prefixCls,
       `${props.prefixCls}-${props.position}`);
@@ -369,7 +368,7 @@ export default class Drawer extends React.Component {
       overlayStyle.transition = 'none';
     }
 
-    if (useTouch) {
+    if (this.state.touchSupported && this.props.touch) {
       if (this.props.open) {
         rootProps.onTouchStart = this.onTouchStart;
         rootProps.onTouchMove = this.onTouchMove;

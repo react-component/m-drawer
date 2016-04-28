@@ -30,11 +30,6 @@ const App = React.createClass({
       this.onOpenChange(false);
     }
   },
-  changePos(e) {
-    this.setState({
-      position: e.target.value,
-    });
-  },
   render() {
     const sidebar = (<div>
       <h3>
@@ -59,13 +54,16 @@ const App = React.createClass({
       <Drawer sidebar={sidebar} {...drawerProps}>
         <div className="main">
           <p>React component</p>
-          <button onClick={() => {this.setState({ open: !this.state.open });}}>switch-open</button>
+          <button onClick={() => { this.setState({ open: !this.state.open }); }}>
+            switch-open
+          </button>
           <p>
             {['left', 'right', 'top', 'bottom'].map((i, index) => (<span
               key={index} style={{ marginRight: 10 }}
             >
               <input type="radio" value={i} id={`pos-${index}`}
-                checked={this.state.position === i} onChange={this.changePos}
+                checked={this.state.position === i}
+                onChange={(e) => { this.setState({ position: e.target.value }); }}
               /> <label htmlFor={`pos-${index}`}>{i}</label>
             </span>))}
           </p>
