@@ -19,7 +19,7 @@
 .rc-drawer-draghandle {
   z-index: 1;
   position: absolute;
-  background-color: rgba(50, 50, 50, 0.2);
+  background-color: rgba(50, 50, 50, 0.1);
 }
 .rc-drawer-overlay {
   z-index: 1;
@@ -54,13 +54,7 @@
 .rc-drawer.rc-drawer-left .rc-drawer-draghandle,
 .rc-drawer.rc-drawer-right .rc-drawer-draghandle {
   width: 20px;
-}
-.rc-drawer.rc-drawer-left .rc-drawer-draghandle::after,
-.rc-drawer.rc-drawer-right .rc-drawer-draghandle::after {
-  content: '||';
-  position: absolute;
-  top: 48%;
-  left: 1px;
+  height: 100%;
 }
 .rc-drawer.rc-drawer-top .rc-drawer-sidebar,
 .rc-drawer.rc-drawer-bottom .rc-drawer-sidebar,

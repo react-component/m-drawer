@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-drawer@0.3.1</title>
+  <title>simple.js - example - rc-drawer@0.3.2</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -258,7 +258,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-drawer@0.3.1</h1>
+      <h1>rc-drawer@0.3.2</h1>
 
       <p>drawer ui component for react</p>
     </div>
@@ -296,11 +296,6 @@ const App = React.createClass({
       this.onOpenChange(false);
     }
   },
-  changePos(e) {
-    this.setState({
-      position: e.target.value,
-    });
-  },
   render() {
     const sidebar = (&lt;div&gt;
       &lt;h3&gt;
@@ -325,13 +320,16 @@ const App = React.createClass({
       &lt;Drawer sidebar={sidebar} {...drawerProps}&gt;
         &lt;div className="main"&gt;
           &lt;p&gt;React component&lt;/p&gt;
-          &lt;button onClick={() =&gt; {this.setState({ open: !this.state.open });}}&gt;switch-open&lt;/button&gt;
+          &lt;button onClick={() =&gt; { this.setState({ open: !this.state.open }); }}&gt;
+            switch-open
+          &lt;/button&gt;
           &lt;p&gt;
             {['left', 'right', 'top', 'bottom'].map((i, index) =&gt; (&lt;span
               key={index} style={{ marginRight: 10 }}
             &gt;
               &lt;input type="radio" value={i} id={`pos-${index}`}
-                checked={this.state.position === i} onChange={this.changePos}
+                checked={this.state.position === i}
+                onChange={(e) =&gt; { this.setState({ position: e.target.value }); }}
               /&gt; &lt;label htmlFor={`pos-${index}`}&gt;{i}&lt;/label&gt;
             &lt;/span&gt;))}
           &lt;/p&gt;

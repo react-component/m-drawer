@@ -56,11 +56,6 @@ webpackJsonp([0,1],[
 	      this.onOpenChange(false);
 	    }
 	  },
-	  changePos: function changePos(e) {
-	    this.setState({
-	      position: e.target.value
-	    });
-	  },
 	  render: function render() {
 	    var _this = this;
 	
@@ -124,7 +119,10 @@ webpackJsonp([0,1],[
 	                  key: index, style: { marginRight: 10 }
 	                },
 	                _react2["default"].createElement('input', { type: 'radio', value: i, id: 'pos-' + index,
-	                  checked: _this.state.position === i, onChange: _this.changePos
+	                  checked: _this.state.position === i,
+	                  onChange: function onChange(e) {
+	                    _this.setState({ position: e.target.value });
+	                  }
 	                }),
 	                ' ',
 	                _react2["default"].createElement(
@@ -498,7 +496,7 @@ webpackJsonp([0,1],[
 	      touchCurrentY: null,
 	
 	      // if touch is supported by the browser
-	      dragSupported: (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && 'ontouchstart' in window
+	      touchSupported: (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && 'ontouchstart' in window
 	    };
 	    return _this;
 	  }
@@ -538,9 +536,8 @@ webpackJsonp([0,1],[
 	      var sidebarStyle = _extends({}, props.sidebarStyle);
 	      var contentStyle = _extends({}, props.contentStyle);
 	      var overlayStyle = _extends({}, props.overlayStyle);
-	      var useTouch = this.state.dragSupported && this.props.touch;
 	      var isTouching = this.isTouching();
-	      var dragHandle = void 0;
+	      var dragHandle = null;
 	
 	      rootProps.className = (0, _classnames2["default"])(props.className, props.prefixCls, props.prefixCls + '-' + props.position);
 	
@@ -566,7 +563,7 @@ webpackJsonp([0,1],[
 	        overlayStyle.transition = 'none';
 	      }
 	
-	      if (useTouch) {
+	      if (this.state.touchSupported && this.props.touch) {
 	        if (this.props.open) {
 	          rootProps.onTouchStart = this.onTouchStart;
 	          rootProps.onTouchMove = this.onTouchMove;
