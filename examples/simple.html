@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-drawer@0.3.3</title>
+  <title>simple.js - example - rc-drawer@0.4.0</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -258,7 +258,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-drawer@0.3.3</h1>
+      <h1>rc-drawer@0.4.0</h1>
 
       <p>drawer ui component for react</p>
     </div>
@@ -279,6 +279,7 @@ const App = React.createClass({
       open: false,
       transitions: true,
       touch: true,
+      enableDragHandle: false,
       position: 'left',
       dragToggleDistance: 30,
     };
@@ -311,6 +312,7 @@ const App = React.createClass({
       docked: this.state.docked,
       open: this.state.open,
       touch: this.state.touch,
+      enableDragHandle: this.state.enableDragHandle,
       position: this.state.position,
       dragToggleDistance: this.state.dragToggleDistance,
       transitions: this.state.transitions,

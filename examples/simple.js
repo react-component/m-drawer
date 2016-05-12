@@ -39,6 +39,7 @@ webpackJsonp([0,1],[
 	      open: false,
 	      transitions: true,
 	      touch: true,
+	      enableDragHandle: false,
 	      position: 'left',
 	      dragToggleDistance: 30
 	    };
@@ -83,6 +84,7 @@ webpackJsonp([0,1],[
 	      docked: this.state.docked,
 	      open: this.state.open,
 	      touch: this.state.touch,
+	      enableDragHandle: this.state.enableDragHandle,
 	      position: this.state.position,
 	      dragToggleDistance: this.state.dragToggleDistance,
 	      transitions: this.state.transitions,
@@ -540,6 +542,7 @@ webpackJsonp([0,1],[
 	      var position = _props.position;
 	      var transitions = _props.transitions;
 	      var touch = _props.touch;
+	      var enableDragHandle = _props.enableDragHandle;
 	      var sidebar = _props.sidebar;
 	      var children = _props.children;
 	      var docked = _props.docked;
@@ -585,10 +588,8 @@ webpackJsonp([0,1],[
 	          rootProps.onTouchEnd = this.onTouchEnd;
 	          rootProps.onTouchCancel = this.onTouchEnd;
 	          rootProps.onScroll = this.onScroll;
-	        } else {
-	          var dragHandleStyle = _extends({}, this.props.dragHandleStyle);
-	
-	          dragHandle = _react2["default"].createElement('div', { className: prefixCls + '-draghandle', style: dragHandleStyle,
+	        } else if (enableDragHandle) {
+	          dragHandle = _react2["default"].createElement('div', { className: prefixCls + '-draghandle', style: this.props.dragHandleStyle,
 	            onTouchStart: this.onTouchStart, onTouchMove: this.onTouchMove,
 	            onTouchEnd: this.onTouchEnd, onTouchCancel: this.onTouchEnd,
 	            ref: 'dragHandle'
@@ -655,6 +656,7 @@ webpackJsonp([0,1],[
 	
 	  // boolean if touch gestures are enabled
 	  touch: _react2["default"].PropTypes.bool,
+	  enableDragHandle: _react2["default"].PropTypes.bool,
 	
 	  // where to place the sidebar
 	  position: _react2["default"].PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
@@ -675,6 +677,7 @@ webpackJsonp([0,1],[
 	  open: false,
 	  transitions: true,
 	  touch: true,
+	  enableDragHandle: true,
 	  position: 'left',
 	  dragToggleDistance: 30,
 	  onOpenChange: function onOpenChange() {}
