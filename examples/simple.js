@@ -233,6 +233,8 @@ webpackJsonp([0,1],[
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -530,48 +532,61 @@ webpackJsonp([0,1],[
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var props = this.props;
-	      var prefixCls = props.prefixCls;
-	      var rootProps = {};
-	      var sidebarStyle = _extends({}, props.sidebarStyle);
-	      var contentStyle = _extends({}, props.contentStyle);
-	      var overlayStyle = _extends({}, props.overlayStyle);
-	      var isTouching = this.isTouching();
-	      var dragHandle = null;
+	      var _rootCls;
 	
-	      rootProps.className = (0, _classnames2["default"])(props.className, props.prefixCls, props.prefixCls + '-' + props.position);
+	      var _props = this.props;
+	      var className = _props.className;
+	      var prefixCls = _props.prefixCls;
+	      var position = _props.position;
+	      var transitions = _props.transitions;
+	      var touch = _props.touch;
+	      var sidebar = _props.sidebar;
+	      var children = _props.children;
+	      var docked = _props.docked;
+	      var open = _props.open;
+	
+	
+	      var sidebarStyle = _extends({}, this.props.sidebarStyle);
+	      var contentStyle = _extends({}, this.props.contentStyle);
+	      var overlayStyle = _extends({}, this.props.overlayStyle);
+	
+	      var rootCls = (_rootCls = {}, _defineProperty(_rootCls, className, !!className), _defineProperty(_rootCls, prefixCls, true), _defineProperty(_rootCls, prefixCls + '-' + position, true), _rootCls);
+	
+	      var rootProps = {};
+	      var isTouching = this.isTouching();
 	
 	      if (isTouching) {
 	        this.renderStyle({ sidebarStyle: sidebarStyle, isTouching: true, overlayStyle: overlayStyle });
-	      } else if (this.props.docked) {
-	        // show sidebar
+	      } else if (docked) {
 	        if (this.state.sidebarWidth !== 0) {
+	          rootCls[prefixCls + '-docked'] = true;
 	          this.renderStyle({ sidebarStyle: sidebarStyle, contentStyle: contentStyle });
 	        }
-	      } else if (this.props.open) {
-	        // slide open sidebar
+	      } else if (open) {
+	        rootCls[prefixCls + '-open'] = true;
 	        this.renderStyle({ sidebarStyle: sidebarStyle });
-	        // show overlay
 	        overlayStyle.opacity = 1;
 	        overlayStyle.visibility = 'visible';
 	      }
 	
-	      if (isTouching || !this.props.transitions) {
+	      if (isTouching || !transitions) {
 	        sidebarStyle.transition = 'none';
 	        sidebarStyle.WebkitTransition = 'none';
 	        contentStyle.transition = 'none';
 	        overlayStyle.transition = 'none';
 	      }
 	
-	      if (this.state.touchSupported && this.props.touch) {
-	        if (this.props.open) {
+	      var dragHandle = null;
+	
+	      if (this.state.touchSupported && touch) {
+	        if (open) {
 	          rootProps.onTouchStart = this.onTouchStart;
 	          rootProps.onTouchMove = this.onTouchMove;
 	          rootProps.onTouchEnd = this.onTouchEnd;
 	          rootProps.onTouchCancel = this.onTouchEnd;
 	          rootProps.onScroll = this.onScroll;
 	        } else {
-	          var dragHandleStyle = _extends({}, props.dragHandleStyle);
+	          var dragHandleStyle = _extends({}, this.props.dragHandleStyle);
 	
 	          dragHandle = _react2["default"].createElement('div', { className: prefixCls + '-draghandle', style: dragHandleStyle,
 	            onTouchStart: this.onTouchStart, onTouchMove: this.onTouchMove,
@@ -583,13 +598,13 @@ webpackJsonp([0,1],[
 	
 	      return _react2["default"].createElement(
 	        'div',
-	        rootProps,
+	        _extends({ className: (0, _classnames2["default"])(rootCls) }, rootProps),
 	        _react2["default"].createElement(
 	          'div',
 	          { className: prefixCls + '-sidebar', style: sidebarStyle,
 	            ref: 'sidebar'
 	          },
-	          this.props.sidebar
+	          sidebar
 	        ),
 	        _react2["default"].createElement('div', { className: prefixCls + '-overlay', style: overlayStyle,
 	          onClick: this.onOverlayClicked,
@@ -602,7 +617,7 @@ webpackJsonp([0,1],[
 	            ref: 'content'
 	          },
 	          dragHandle,
-	          this.props.children
+	          children
 	        )
 	      );
 	    }
@@ -613,6 +628,7 @@ webpackJsonp([0,1],[
 	
 	Drawer.propTypes = {
 	  prefixCls: _react2["default"].PropTypes.string,
+	  className: _react2["default"].PropTypes.string,
 	  // main content to render
 	  children: _react2["default"].PropTypes.node.isRequired,
 	
