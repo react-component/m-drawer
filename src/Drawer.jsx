@@ -19,6 +19,7 @@ const CANCEL_DISTANCE_ON_SCROLL = 20;
 export default class Drawer extends React.Component {
   static propTypes = {
     prefixCls: React.PropTypes.string,
+    className: React.PropTypes.string,
     // main content to render
     children: React.PropTypes.node.isRequired,
 
@@ -334,49 +335,54 @@ export default class Drawer extends React.Component {
   }
 
   render() {
-    const props = this.props;
-    const prefixCls = props.prefixCls;
-    const rootProps = {};
-    const sidebarStyle = { ...props.sidebarStyle };
-    const contentStyle = { ...props.contentStyle };
-    const overlayStyle = { ...props.overlayStyle };
-    const isTouching = this.isTouching();
-    let dragHandle = null;
+    const { className, prefixCls, position,
+      transitions, touch, sidebar, children, docked, open } = this.props;
 
-    rootProps.className = classNames(props.className, props.prefixCls,
-      `${props.prefixCls}-${props.position}`);
+    const sidebarStyle = { ...this.props.sidebarStyle };
+    const contentStyle = { ...this.props.contentStyle };
+    const overlayStyle = { ...this.props.overlayStyle };
+
+    const rootCls = {
+      [className]: !!className,
+      [prefixCls]: true,
+      [`${prefixCls}-${position}`]: true,
+    };
+
+    const rootProps = {};
+    const isTouching = this.isTouching();
 
     if (isTouching) {
       this.renderStyle({ sidebarStyle, isTouching: true, overlayStyle });
-    } else if (this.props.docked) {
-      // show sidebar
+    } else if (docked) {
       if (this.state.sidebarWidth !== 0) {
+        rootCls[`${prefixCls}-docked`] = true;
         this.renderStyle({ sidebarStyle, contentStyle });
       }
-    } else if (this.props.open) {
-      // slide open sidebar
+    } else if (open) {
+      rootCls[`${prefixCls}-open`] = true;
       this.renderStyle({ sidebarStyle });
-      // show overlay
       overlayStyle.opacity = 1;
       overlayStyle.visibility = 'visible';
     }
 
-    if (isTouching || !this.props.transitions) {
+    if (isTouching || !transitions) {
       sidebarStyle.transition = 'none';
       sidebarStyle.WebkitTransition = 'none';
       contentStyle.transition = 'none';
       overlayStyle.transition = 'none';
     }
 
-    if (this.state.touchSupported && this.props.touch) {
-      if (this.props.open) {
+    let dragHandle = null;
+
+    if (this.state.touchSupported && touch) {
+      if (open) {
         rootProps.onTouchStart = this.onTouchStart;
         rootProps.onTouchMove = this.onTouchMove;
         rootProps.onTouchEnd = this.onTouchEnd;
         rootProps.onTouchCancel = this.onTouchEnd;
         rootProps.onScroll = this.onScroll;
       } else {
-        const dragHandleStyle = { ...props.dragHandleStyle };
+        const dragHandleStyle = { ...this.props.dragHandleStyle };
 
         dragHandle = (
           <div className={`${prefixCls}-draghandle`} style={dragHandleStyle}
@@ -388,11 +394,11 @@ export default class Drawer extends React.Component {
     }
 
     return (
-      <div {...rootProps}>
+      <div className={classNames(rootCls)} {...rootProps}>
         <div className={`${prefixCls}-sidebar`} style={sidebarStyle}
           ref="sidebar"
         >
-          {this.props.sidebar}
+          {sidebar}
         </div>
         <div className={`${prefixCls}-overlay`} style={overlayStyle}
           onClick={this.onOverlayClicked}
@@ -403,7 +409,7 @@ export default class Drawer extends React.Component {
           ref="content"
         >
           {dragHandle}
-          {this.props.children}
+          {children}
         </div>
       </div>
     );
