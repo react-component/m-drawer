@@ -13,6 +13,7 @@ const App = React.createClass({
       open: false,
       transitions: true,
       touch: true,
+      enableDragHandle: false,
       position: 'left',
       dragToggleDistance: 30,
     };
@@ -45,6 +46,7 @@ const App = React.createClass({
       docked: this.state.docked,
       open: this.state.open,
       touch: this.state.touch,
+      enableDragHandle: this.state.enableDragHandle,
       position: this.state.position,
       dragToggleDistance: this.state.dragToggleDistance,
       transitions: this.state.transitions,

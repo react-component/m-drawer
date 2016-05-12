@@ -46,6 +46,7 @@ export default class Drawer extends React.Component {
 
     // boolean if touch gestures are enabled
     touch: React.PropTypes.bool,
+    enableDragHandle: React.PropTypes.bool,
 
     // where to place the sidebar
     position: React.PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
@@ -67,6 +68,7 @@ export default class Drawer extends React.Component {
     open: false,
     transitions: true,
     touch: true,
+    enableDragHandle: true,
     position: 'left',
     dragToggleDistance: 30,
     onOpenChange: () => {},
@@ -335,8 +337,8 @@ export default class Drawer extends React.Component {
   }
 
   render() {
-    const { className, prefixCls, position,
-      transitions, touch, sidebar, children, docked, open } = this.props;
+    const { className, prefixCls, position, transitions,
+      touch, enableDragHandle, sidebar, children, docked, open } = this.props;
 
     const sidebarStyle = { ...this.props.sidebarStyle };
     const contentStyle = { ...this.props.contentStyle };
@@ -381,11 +383,9 @@ export default class Drawer extends React.Component {
         rootProps.onTouchEnd = this.onTouchEnd;
         rootProps.onTouchCancel = this.onTouchEnd;
         rootProps.onScroll = this.onScroll;
-      } else {
-        const dragHandleStyle = { ...this.props.dragHandleStyle };
-
+      } else if (enableDragHandle) {
         dragHandle = (
-          <div className={`${prefixCls}-draghandle`} style={dragHandleStyle}
+          <div className={`${prefixCls}-draghandle`} style={this.props.dragHandleStyle}
             onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove}
             onTouchEnd={this.onTouchEnd} onTouchCancel={this.onTouchEnd}
             ref="dragHandle"

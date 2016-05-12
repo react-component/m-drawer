@@ -78,6 +78,7 @@ React.render(<Drawer />, container);
 | docked | If the sidebar should be docked in document | Boolean | false |
 | transitions | If transitions should be enabled | Boolean | true |
 | touch | If touch gestures should be enabled | Boolean | true |
+| enableDragHandle | If dragHandle should be enabled | Boolean | true |
 | dragToggleDistance | Distance the sidebar has to be dragged before it will open/close after it is released. | Number | 30 |
 
 > change from [https://github.com/balloob/react-sidebar](https://github.com/balloob/react-sidebar)
