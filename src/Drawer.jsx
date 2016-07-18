@@ -109,7 +109,7 @@ export default class Drawer extends React.Component {
 
   onOverlayClicked = () => {
     if (this.props.open) {
-      this.props.onOpenChange(false);
+      this.props.onOpenChange(false, { overlayClicked: true });
     }
   }
 
