@@ -267,7 +267,7 @@ webpackJsonp([0,1],[
 	
 	    _this.onOverlayClicked = function () {
 	      if (_this.props.open) {
-	        _this.props.onOpenChange(false);
+	        _this.props.onOpenChange(false, { overlayClicked: true });
 	      }
 	    };
 	
