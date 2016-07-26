@@ -5,6 +5,8 @@ import './simple.less';
 import Drawer from 'rc-drawer';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
 const App = React.createClass({
   getInitialState() {
