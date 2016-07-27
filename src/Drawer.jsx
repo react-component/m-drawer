@@ -400,9 +400,17 @@ export default class Drawer extends React.Component {
         >
           {sidebar}
         </div>
+        {/*
         <div className={`${prefixCls}-overlay`} style={overlayStyle}
           onClick={this.onOverlayClicked}
           onTouchTap={this.onOverlayClicked}
+          ref="overlay"
+        /> */}
+        <div className={`${prefixCls}-overlay`}
+          style={overlayStyle}
+          role="presentation"
+          tabIndex="0"
+          onClick={this.onOverlayClicked}
           ref="overlay"
         />
         <div className={`${prefixCls}-content`} style={contentStyle}
