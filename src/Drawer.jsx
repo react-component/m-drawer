@@ -128,7 +128,7 @@ export default class Drawer extends React.Component {
   }
 
   onTouchMove = (ev) => {
-    ev.preventDefault();
+    // ev.preventDefault(); // cannot touchmove with FastClick
     if (this.isTouching()) {
       for (let ind = 0; ind < ev.targetTouches.length; ind++) {
         // we only care about the finger that we are tracking
