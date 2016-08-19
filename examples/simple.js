@@ -827,7 +827,7 @@ webpackJsonp([0,1],[
 	    };
 	
 	    _this.onTouchMove = function (ev) {
-	      ev.preventDefault();
+	      // ev.preventDefault(); // cannot touchmove with FastClick
 	      if (_this.isTouching()) {
 	        for (var ind = 0; ind < ev.targetTouches.length; ind++) {
 	          // we only care about the finger that we are tracking
