@@ -153,6 +153,10 @@ webpackJsonp([0,1],[
 	  }
 	}); // use jsx to render html, do not modify simple.html
 	
+	var div = document.createElement('div');
+	div.innerHTML = '<script type="text/javascript" src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>\n<script type="text/javascript">\n  if (\'addEventListener\' in document) {\n    window.addEventListener(\'load\', function() {\n      FastClick.attach(document.body);\n    }, false);\n  }\n</script>';
+	document.body.appendChild(div);
+	
 	_reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('__react-content'));
 
 /***/ },
@@ -817,7 +821,7 @@ webpackJsonp([0,1],[
 	      if (!_this.isTouching()) {
 	        var touch = ev.targetTouches[0];
 	        _this.setState({
-	          touchIdentifier: touch.identifier,
+	          touchIdentifier: !_this.overlayClicked ? touch.identifier : null,
 	          touchStartX: touch.clientX,
 	          touchStartY: touch.clientY,
 	          touchCurrentX: touch.clientX,
@@ -1139,8 +1143,12 @@ webpackJsonp([0,1],[
 	    var evt = {};
 	    // FastClick use touchstart instead of click
 	    if (this.state.touchSupported) {
-	      evt.onTouchStart = this.onOverlayClicked;
+	      evt.onTouchStart = function () {
+	        _this2.overlayClicked = true;
+	        _this2.onOverlayClicked();
+	      };
 	      evt.onTouchEnd = function () {
+	        _this2.overlayClicked = false;
 	        _this2.setState({
 	          touchIdentifier: null
 	        });
