@@ -1071,7 +1071,8 @@ webpackJsonp([0,1],[
 	
 	
 	  Drawer.prototype.render = function render() {
-	    var _rootCls;
+	    var _rootCls,
+	        _this2 = this;
 	
 	    var _props = this.props;
 	    var className = _props.className;
@@ -1135,6 +1136,19 @@ webpackJsonp([0,1],[
 	      }
 	    }
 	
+	    var evt = {};
+	    // FastClick use touchstart instead of click
+	    if (this.state.touchSupported) {
+	      evt.onTouchStart = this.onOverlayClicked;
+	      evt.onTouchEnd = function () {
+	        _this2.setState({
+	          touchIdentifier: null
+	        });
+	      };
+	    } else {
+	      evt.onClick = this.onOverlayClicked;
+	    }
+	
 	    return _react2.default.createElement(
 	      'div',
 	      (0, _extends3.default)({ className: (0, _classnames2.default)(rootCls) }, rootProps),
@@ -1145,13 +1159,12 @@ webpackJsonp([0,1],[
 	        },
 	        sidebar
 	      ),
-	      _react2.default.createElement('div', { className: prefixCls + '-overlay',
+	      _react2.default.createElement('div', (0, _extends3.default)({ className: prefixCls + '-overlay',
 	        style: overlayStyle,
 	        role: 'presentation',
 	        tabIndex: '0',
-	        onClick: this.onOverlayClicked,
 	        ref: 'overlay'
-	      }),
+	      }, evt)),
 	      _react2.default.createElement(
 	        'div',
 	        { className: prefixCls + '-content', style: contentStyle,
