@@ -53,7 +53,7 @@ const App = React.createClass({
       onOpenChange: this.onOpenChange,
     };
     return (<div className="drawer-container">
-      <Drawer sidebar={sidebar} {...drawerProps}>
+      <Drawer sidebar={sidebar} {...drawerProps} style={{ overflow: 'auto' }}>
         <div className="main">
           <p>React component</p>
           <button onClick={() => { this.setState({ open: !this.state.open }); }}>

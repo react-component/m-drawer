@@ -27,6 +27,7 @@ export default class Drawer extends React.Component {
     // styles: React.PropTypes.shape({
     //   dragHandle: React.PropTypes.object,
     // }),
+    style: React.PropTypes.object,
     sidebarStyle: React.PropTypes.object,
     contentStyle: React.PropTypes.object,
     overlayStyle: React.PropTypes.object,
@@ -337,7 +338,7 @@ export default class Drawer extends React.Component {
   }
 
   render() {
-    const { className, prefixCls, position, transitions,
+    const { className, style, prefixCls, position, transitions,
       touch, enableDragHandle, sidebar, children, docked, open } = this.props;
 
     const sidebarStyle = { ...this.props.sidebarStyle };
@@ -350,7 +351,7 @@ export default class Drawer extends React.Component {
       [`${prefixCls}-${position}`]: true,
     };
 
-    const rootProps = {};
+    const rootProps = { style };
     const isTouching = this.isTouching();
 
     if (isTouching) {
