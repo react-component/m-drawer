@@ -821,7 +821,7 @@ webpackJsonp([0,1],[
 	      if (!_this.isTouching()) {
 	        var touch = ev.targetTouches[0];
 	        _this.setState({
-	          touchIdentifier: !_this.overlayClicked ? touch.identifier : null,
+	          touchIdentifier: !_this.notTouch ? touch.identifier : null,
 	          touchStartX: touch.clientX,
 	          touchStartY: touch.clientY,
 	          touchCurrentX: touch.clientX,
@@ -847,6 +847,7 @@ webpackJsonp([0,1],[
 	    };
 	
 	    _this.onTouchEnd = function () {
+	      _this.notTouch = false;
 	      if (_this.isTouching()) {
 	        // trigger a change to open if sidebar has been dragged beyond dragToggleDistance
 	        var touchWidth = _this.touchSidebarWidth();
@@ -1126,7 +1127,10 @@ webpackJsonp([0,1],[
 	
 	    if (this.state.touchSupported && touch) {
 	      if (open) {
-	        rootProps.onTouchStart = this.onTouchStart;
+	        rootProps.onTouchStart = function (ev) {
+	          _this2.notTouch = true;
+	          _this2.onTouchStart(ev);
+	        };
 	        rootProps.onTouchMove = this.onTouchMove;
 	        rootProps.onTouchEnd = this.onTouchEnd;
 	        rootProps.onTouchCancel = this.onTouchEnd;
@@ -1140,22 +1144,22 @@ webpackJsonp([0,1],[
 	      }
 	    }
 	
-	    var evt = {};
-	    // FastClick use touchstart instead of click
-	    if (this.state.touchSupported) {
-	      evt.onTouchStart = function () {
-	        _this2.overlayClicked = true;
-	        _this2.onOverlayClicked();
-	      };
-	      evt.onTouchEnd = function () {
-	        _this2.overlayClicked = false;
-	        _this2.setState({
-	          touchIdentifier: null
-	        });
-	      };
-	    } else {
-	      evt.onClick = this.onOverlayClicked;
-	    }
+	    // const evt = {};
+	    // // FastClick use touchstart instead of click
+	    // if (this.state.touchSupported) {
+	    //   evt.onTouchStart = () => {
+	    //     this.notTouch = true;
+	    //     this.onOverlayClicked();
+	    //   };
+	    //   evt.onTouchEnd = () => {
+	    //     this.notTouch = false;
+	    //     this.setState({
+	    //       touchIdentifier: null,
+	    //     });
+	    //   };
+	    // } else {
+	    //   evt.onClick = this.onOverlayClicked;
+	    // }
 	
 	    return _react2.default.createElement(
 	      'div',
@@ -1167,12 +1171,13 @@ webpackJsonp([0,1],[
 	        },
 	        sidebar
 	      ),
-	      _react2.default.createElement('div', (0, _extends3.default)({ className: prefixCls + '-overlay',
+	      _react2.default.createElement('div', { className: prefixCls + '-overlay',
 	        style: overlayStyle,
 	        role: 'presentation',
 	        tabIndex: '0',
-	        ref: 'overlay'
-	      }, evt)),
+	        ref: 'overlay',
+	        onClick: this.onOverlayClicked
+	      }),
 	      _react2.default.createElement(
 	        'div',
 	        { className: prefixCls + '-content', style: contentStyle,
