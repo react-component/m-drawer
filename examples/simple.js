@@ -97,7 +97,7 @@ webpackJsonp([0,1],[
 	      { className: 'drawer-container' },
 	      _react2.default.createElement(
 	        _rcDrawer2.default,
-	        (0, _extends3.default)({ sidebar: sidebar }, drawerProps),
+	        (0, _extends3.default)({ sidebar: sidebar }, drawerProps, { style: { overflow: 'auto' } }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'main' },
@@ -1075,6 +1075,7 @@ webpackJsonp([0,1],[
 	
 	    var _props = this.props;
 	    var className = _props.className;
+	    var style = _props.style;
 	    var prefixCls = _props.prefixCls;
 	    var position = _props.position;
 	    var transitions = _props.transitions;
@@ -1092,7 +1093,7 @@ webpackJsonp([0,1],[
 	
 	    var rootCls = (_rootCls = {}, (0, _defineProperty3.default)(_rootCls, className, !!className), (0, _defineProperty3.default)(_rootCls, prefixCls, true), (0, _defineProperty3.default)(_rootCls, prefixCls + '-' + position, true), _rootCls);
 	
-	    var rootProps = {};
+	    var rootProps = { style: style };
 	    var isTouching = this.isTouching();
 	
 	    if (isTouching) {
@@ -1175,6 +1176,7 @@ webpackJsonp([0,1],[
 	  // styles: React.PropTypes.shape({
 	  //   dragHandle: React.PropTypes.object,
 	  // }),
+	  style: _react2.default.PropTypes.object,
 	  sidebarStyle: _react2.default.PropTypes.object,
 	  contentStyle: _react2.default.PropTypes.object,
 	  overlayStyle: _react2.default.PropTypes.object,
