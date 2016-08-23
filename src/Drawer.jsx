@@ -394,6 +394,19 @@ export default class Drawer extends React.Component {
       }
     }
 
+    const evt = {};
+    // FastClick use touchstart instead of click
+    if (this.state.touchSupported) {
+      evt.onTouchStart = this.onOverlayClicked;
+      evt.onTouchEnd = () => {
+        this.setState({
+          touchIdentifier: null,
+        });
+      };
+    } else {
+      evt.onClick = this.onOverlayClicked;
+    }
+
     return (
       <div className={classNames(rootCls)} {...rootProps}>
         <div className={`${prefixCls}-sidebar`} style={sidebarStyle}
@@ -411,8 +424,8 @@ export default class Drawer extends React.Component {
           style={overlayStyle}
           role="presentation"
           tabIndex="0"
-          onClick={this.onOverlayClicked}
           ref="overlay"
+          {...evt}
         />
         <div className={`${prefixCls}-content`} style={contentStyle}
           ref="content"
