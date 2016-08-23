@@ -119,7 +119,7 @@ export default class Drawer extends React.Component {
     if (!this.isTouching()) {
       const touch = ev.targetTouches[0];
       this.setState({
-        touchIdentifier: touch.identifier,
+        touchIdentifier: !this.overlayClicked ? touch.identifier : null,
         touchStartX: touch.clientX,
         touchStartY: touch.clientY,
         touchCurrentX: touch.clientX,
@@ -397,8 +397,12 @@ export default class Drawer extends React.Component {
     const evt = {};
     // FastClick use touchstart instead of click
     if (this.state.touchSupported) {
-      evt.onTouchStart = this.onOverlayClicked;
+      evt.onTouchStart = () => {
+        this.overlayClicked = true;
+        this.onOverlayClicked();
+      };
       evt.onTouchEnd = () => {
+        this.overlayClicked = false;
         this.setState({
           touchIdentifier: null,
         });

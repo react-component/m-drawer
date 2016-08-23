@@ -77,4 +77,15 @@ const App = React.createClass({
   },
 });
 
+const div = document.createElement('div');
+div.innerHTML = `<script type="text/javascript" src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
+<script type="text/javascript">
+  if ('addEventListener' in document) {
+    window.addEventListener('load', function() {
+      FastClick.attach(document.body);
+    }, false);
+  }
+</script>`;
+document.body.appendChild(div);
+
 ReactDOM.render(<App />, document.getElementById('__react-content'));
