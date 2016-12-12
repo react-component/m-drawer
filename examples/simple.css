@@ -41,8 +41,8 @@
   right: 0;
   bottom: 0;
   overflow: auto;
-  -webkit-transition: left 0.3s ease-out, right 0.3s ease-out;
-  transition: left 0.3s ease-out, right 0.3s ease-out;
+  -webkit-transition: left 0.3s ease-out, right 0.3s ease-out, top 0.3s ease-out, bottom 0.3s ease-out;
+  transition: left 0.3s ease-out, right 0.3s ease-out, top 0.3s ease-out, bottom 0.3s ease-out;
 }
 .rc-drawer.rc-drawer-left .rc-drawer-sidebar,
 .rc-drawer.rc-drawer-right .rc-drawer-sidebar,
