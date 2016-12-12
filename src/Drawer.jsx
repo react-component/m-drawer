@@ -431,7 +431,6 @@ export default class Drawer extends React.Component {
         <div className={`${prefixCls}-overlay`}
           style={overlayStyle}
           role="presentation"
-          tabIndex="0"
           ref="overlay"
           onClick={this.onOverlayClicked}
         />
