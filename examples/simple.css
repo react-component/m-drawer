@@ -9,7 +9,6 @@
 .rc-drawer-sidebar {
   z-index: 2;
   position: absolute;
-  -webkit-transition: -webkit-transform 0.3s ease-out;
   transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
   transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
@@ -30,7 +29,6 @@
   bottom: 0;
   opacity: 0;
   visibility: hidden;
-  -webkit-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
   background-color: rgba(0, 0, 0, 0.3);
 }
@@ -41,7 +39,6 @@
   right: 0;
   bottom: 0;
   overflow: auto;
-  -webkit-transition: left 0.3s ease-out, right 0.3s ease-out, top 0.3s ease-out, bottom 0.3s ease-out;
   transition: left 0.3s ease-out, right 0.3s ease-out, top 0.3s ease-out, bottom 0.3s ease-out;
 }
 .rc-drawer.rc-drawer-left .rc-drawer-sidebar,
