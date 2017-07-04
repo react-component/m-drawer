@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
@@ -18,45 +19,45 @@ const CANCEL_DISTANCE_ON_SCROLL = 20;
 
 export default class Drawer extends React.Component {
   static propTypes = {
-    prefixCls: React.PropTypes.string,
-    className: React.PropTypes.string,
+    prefixCls: PropTypes.string,
+    className: PropTypes.string,
     // main content to render
-    children: React.PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 
     // styles
-    // styles: React.PropTypes.shape({
-    //   dragHandle: React.PropTypes.object,
+    // styles: PropTypes.shape({
+    //   dragHandle: PropTypes.object,
     // }),
-    style: React.PropTypes.object,
-    sidebarStyle: React.PropTypes.object,
-    contentStyle: React.PropTypes.object,
-    overlayStyle: React.PropTypes.object,
-    dragHandleStyle: React.PropTypes.object,
+    style: PropTypes.object,
+    sidebarStyle: PropTypes.object,
+    contentStyle: PropTypes.object,
+    overlayStyle: PropTypes.object,
+    dragHandleStyle: PropTypes.object,
 
     // sidebar content to render
-    sidebar: React.PropTypes.node.isRequired,
+    sidebar: PropTypes.node.isRequired,
 
     // boolean if sidebar should be docked
-    docked: React.PropTypes.bool,
+    docked: PropTypes.bool,
 
     // boolean if sidebar should slide open
-    open: React.PropTypes.bool,
+    open: PropTypes.bool,
 
     // boolean if transitions should be disabled
-    transitions: React.PropTypes.bool,
+    transitions: PropTypes.bool,
 
     // boolean if touch gestures are enabled
-    touch: React.PropTypes.bool,
-    enableDragHandle: React.PropTypes.bool,
+    touch: PropTypes.bool,
+    enableDragHandle: PropTypes.bool,
 
     // where to place the sidebar
-    position: React.PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
+    position: PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
 
     // distance we have to drag the sidebar to toggle open state
-    dragToggleDistance: React.PropTypes.number,
+    dragToggleDistance: PropTypes.number,
 
     // callback called when the overlay is clicked
-    onOpenChange: React.PropTypes.func,
+    onOpenChange: PropTypes.func,
   }
 
   static defaultProps = {

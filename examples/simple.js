@@ -6,9 +6,11 @@ import Drawer from 'rc-drawer';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const App = React.createClass({
-  getInitialState() {
-    return {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
       docked: false,
       open: false,
       transitions: true,
@@ -17,12 +19,12 @@ const App = React.createClass({
       position: 'left',
       dragToggleDistance: 30,
     };
-  },
-  onOpenChange(open) {
+  }
+  onOpenChange = (open) => {
     console.log('onOpenChange', open);
     this.setState({ open });
-  },
-  onDock() {
+  }
+  onDock = () => {
     const docked = !this.state.docked;
     this.setState({
       docked,
@@ -30,7 +32,7 @@ const App = React.createClass({
     if (!docked) {
       this.onOpenChange(false);
     }
-  },
+  }
   render() {
     const sidebar = (<div>
       <h3>
@@ -74,8 +76,8 @@ const App = React.createClass({
         </div>
       </Drawer>
     </div>);
-  },
-});
+  }
+}
 
 const div = document.createElement('div');
 div.innerHTML = `<script type="text/javascript" src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
