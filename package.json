@@ -16,33 +16,45 @@
   "repository": "react-component/drawer",
   "bugs": "https://github.com/react-component/drawer/issues",
   "files": [
+    "es",
     "lib",
     "assets/*.css"
   ],
   "license": "MIT",
   "main": "./lib/index",
+  "module": "./es/index",
   "config": {
     "port": 8099
   },
   "scripts": {
     "build": "rc-tools run build",
+    "dist": "rc-tools run dist",
+    "compile": "rc-tools run compile --babel-runtime",
     "gh-pages": "rc-tools run gh-pages",
     "start": "rc-tools run server",
     "pub": "rc-tools run pub --babel-runtime",
     "lint": "rc-tools run lint",
-    "karma": "rc-tools run karma",
-    "saucelabs": "rc-tools run saucelabs",
-    "test": "rc-tools run test",
-    "chrome-test": "rc-tools run chrome-test",
-    "coverage": "rc-tools run coverage"
+    "test": "jest",
+    "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*"
+    ],
+    "transform": {
+      "\\.jsx?$": "./node_modules/rc-tools/scripts/jestPreprocessor.js"
+    }
   },
   "devDependencies": {
-    "expect.js": "0.3.x",
+    "coveralls": "^2.13.1",
+    "enzyme": "^2.6.0",
+    "enzyme-to-json": "^1.4.5",
+    "jest": "^18.0.0",
     "pre-commit": "1.x",
-    "rc-tools": "5.x",
+    "rc-tools": "6.x",
     "react": "15.x",
-    "react-addons-test-utils": "15.x",
-    "react-dom": "15.x"
+    "react-dom": "15.x",
+    "react-test-renderer": "^15.6.1"
   },
   "pre-commit": [
     "lint"
