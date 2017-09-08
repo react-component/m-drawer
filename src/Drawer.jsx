@@ -111,7 +111,10 @@ export default class Drawer extends React.Component {
 
   onOverlayClicked = () => {
     if (this.props.open) {
-      this.props.onOpenChange(false, { overlayClicked: true });
+      // see https://github.com/react-component/drawer/issues/9
+      requestAnimationFrame(() => {
+        this.props.onOpenChange(false, { overlayClicked: true });
+      });
     }
   }
 

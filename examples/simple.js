@@ -15,7 +15,7 @@ class App extends React.Component {
       open: false,
       transitions: true,
       touch: true,
-      enableDragHandle: false,
+      enableDragHandle: true,
       position: 'left',
       dragToggleDistance: 30,
     };
@@ -78,16 +78,5 @@ class App extends React.Component {
     </div>);
   }
 }
-
-const div = document.createElement('div');
-div.innerHTML = `<script type="text/javascript" src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
-<script type="text/javascript">
-  if ('addEventListener' in document) {
-    window.addEventListener('load', function() {
-      FastClick.attach(document.body);
-    }, false);
-  }
-</script>`;
-document.body.appendChild(div);
 
 ReactDOM.render(<App />, document.getElementById('__react-content'));
