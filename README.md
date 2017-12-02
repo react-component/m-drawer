@@ -67,6 +67,7 @@ React.render(<Drawer />, container);
 | className | additional css class of root dom node | String | '' |
 | prefixCls | prefix class | String | 'rc-drawer' |
 | children | The main content | any | n/a |
+| style | container styles. | Object |  |
 | sidebarStyle | Inline styles. | Object | {} |
 | contentStyle | Inline styles. | Object | {} |
 | overlayStyle | Inline styles. | Object | {} |
