@@ -21,7 +21,6 @@ class App extends React.Component {
     };
   }
   onOpenChange = (open) => {
-    console.log('onOpenChange', open);
     this.setState({ open });
   }
   onDock = () => {
