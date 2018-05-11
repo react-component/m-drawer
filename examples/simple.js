@@ -1,8 +1,8 @@
 // use jsx to render html, do not modify simple.html
 
-import 'rc-drawer/assets/index.less';
+import 'rmc-drawer/assets/index.less';
 import './simple.less';
-import Drawer from 'rc-drawer';
+import Drawer from 'rmc-drawer';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

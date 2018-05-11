@@ -1,17 +1,17 @@
 exports[`Drawer renders correctly 1`] = `
 <div
-  class="forTest rc-drawer rc-drawer-left">
+  class="forTest rmc-drawer rmc-drawer-left">
   <div
-    class="rc-drawer-sidebar">
+    class="rmc-drawer-sidebar">
     <p>
       sidebar
     </p>
   </div>
   <div
-    class="rc-drawer-overlay"
+    class="rmc-drawer-overlay"
     role="presentation" />
   <div
-    class="rc-drawer-content">
+    class="rmc-drawer-content">
     <p>
       React Sidebar is a sidebar component for React.
     </p>

@@ -1,4 +1,4 @@
-# rc-drawer
+# rmc-drawer
 ---
 
 React Drawer Component
@@ -10,18 +10,18 @@ React Drawer Component
 [![gemnasium deps][gemnasium-image]][gemnasium-url]
 [![npm download][download-image]][download-url]
 
-[npm-image]: http://img.shields.io/npm/v/rc-drawer.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/rc-drawer
-[travis-image]: https://img.shields.io/travis/react-component/drawer.svg?style=flat-square
-[travis-url]: https://travis-ci.org/react-component/drawer
-[coveralls-image]: https://img.shields.io/coveralls/react-component/drawer.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/react-component/drawer?branch=master
-[gemnasium-image]: http://img.shields.io/gemnasium/react-component/drawer.svg?style=flat-square
-[gemnasium-url]: https://gemnasium.com/react-component/drawer
+[npm-image]: http://img.shields.io/npm/v/rmc-drawer.svg?style=flat-square
+[npm-url]: http://npmjs.org/package/rmc-drawer
+[travis-image]: https://img.shields.io/travis/react-component/m-drawer.svg?style=flat-square
+[travis-url]: https://travis-ci.org/react-component/m-drawer
+[coveralls-image]: https://img.shields.io/coveralls/react-component/m-drawer.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/react-component/m-drawer?branch=master
+[gemnasium-image]: http://img.shields.io/gemnasium/react-component/m-drawer.svg?style=flat-square
+[gemnasium-url]: https://gemnasium.com/react-component/m-drawer
 [node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
 [node-url]: http://nodejs.org/download/
-[download-image]: https://img.shields.io/npm/dm/rc-drawer.svg?style=flat-square
-[download-url]: https://npmjs.org/package/rc-drawer
+[download-image]: https://img.shields.io/npm/dm/rmc-drawer.svg?style=flat-square
+[download-url]: https://npmjs.org/package/rmc-drawer
 
 
 ## Screenshots
@@ -41,19 +41,19 @@ npm start
 http://localhost:8099/examples/
 
 
-online example: http://react-component.github.io/drawer/
+online example: http://react-component.github.io/m-drawer/
 
 
 ## install
 
 
-[![rc-drawer](https://nodei.co/npm/rc-drawer.png)](https://npmjs.org/package/rc-drawer)
+[![rmc-drawer](https://nodei.co/npm/rmc-drawer.png)](https://npmjs.org/package/rmc-drawer)
 
 
 ## Usage
 
 ```js
-var Drawer = require('rc-drawer');
+var Drawer = require('rmc-drawer');
 var React = require('react');
 React.render(<Drawer />, container);
 ```
@@ -65,7 +65,7 @@ React.render(<Drawer />, container);
 | Property name | Description | Type | Default |
 |---------------|-------------|------|---------|
 | className | additional css class of root dom node | String | '' |
-| prefixCls | prefix class | String | 'rc-drawer' |
+| prefixCls | prefix class | String | 'rmc-drawer' |
 | children | The main content | any | n/a |
 | style | container styles. | Object |  |
 | sidebarStyle | Inline styles. | Object | {} |
@@ -102,4 +102,4 @@ open coverage/ dir
 
 ## License
 
-rc-drawer is released under the MIT license.
+rmc-drawer is released under the MIT license.

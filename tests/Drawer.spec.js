@@ -22,7 +22,8 @@ describe('Drawer', () => {
         <p>React Sidebar is a sidebar component for React.</p>
       </Drawer>
     );
-    wrapper.find('.rc-drawer-overlay').simulate('click');
+    // console.log(wrapper.html())
+    wrapper.find('.rmc-drawer-overlay').simulate('click');
     expect(cb).toBeCalledWith(false, { overlayClicked: true });
   });
 });

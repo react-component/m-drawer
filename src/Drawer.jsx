@@ -61,7 +61,7 @@ export default class Drawer extends React.Component {
   }
 
   static defaultProps = {
-    prefixCls: 'rc-drawer',
+    prefixCls: 'rmc-drawer',
     sidebarStyle: {},
     contentStyle: {},
     overlayStyle: {},
