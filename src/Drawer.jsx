@@ -221,11 +221,11 @@ export default class Drawer extends React.Component {
   }
 
   saveSidebarSize = () => {
-    const sidebar = ReactDOM.findDOMNode(this.refs.sidebar);
+    const sidebar = ReactDOM.findDOMNode(this.sidebar);
     const width = sidebar.offsetWidth;
     const height = sidebar.offsetHeight;
-    const sidebarTop = getOffset(ReactDOM.findDOMNode(this.refs.sidebar)).top;
-    const dragHandleTop = getOffset(ReactDOM.findDOMNode(this.refs.dragHandle)).top;
+    const sidebarTop = getOffset(ReactDOM.findDOMNode(this.sidebar)).top;
+    const dragHandleTop = getOffset(ReactDOM.findDOMNode(this.dragHandle)).top;
 
     if (width !== this.state.sidebarWidth) {
       this.setState({ sidebarWidth: width });
@@ -397,7 +397,7 @@ export default class Drawer extends React.Component {
           <div className={`${prefixCls}-draghandle`} style={this.props.dragHandleStyle}
             onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove}
             onTouchEnd={this.onTouchEnd} onTouchCancel={this.onTouchEnd}
-            ref="dragHandle"
+            ref={(input) => this.dragHandle = input}
           />);
       }
     }
@@ -422,7 +422,7 @@ export default class Drawer extends React.Component {
     return (
       <div className={classNames(rootCls)} {...rootProps}>
         <div className={`${prefixCls}-sidebar`} style={sidebarStyle}
-          ref="sidebar"
+          ref={(input) => this.sidebar = input}
         >
           {sidebar}
         </div>
@@ -435,11 +435,11 @@ export default class Drawer extends React.Component {
         <div className={`${prefixCls}-overlay`}
           style={overlayStyle}
           role="presentation"
-          ref="overlay"
+          ref={(input) => this.overlay = input}
           onClick={this.onOverlayClicked}
         />
         <div className={`${prefixCls}-content`} style={contentStyle}
-          ref="content"
+          ref={(input) => this.content = input}
         >
           {dragHandle}
           {children}
