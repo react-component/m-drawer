@@ -52,7 +52,7 @@
     "coveralls": "^2.13.1",
     "enzyme": "^2.6.0",
     "enzyme-to-json": "^1.4.5",
-    "jest": "^18.0.0",
+    "jest": "^26.4.2",
     "pre-commit": "1.x",
     "rc-tools": "6.x",
     "react": "15.x",
